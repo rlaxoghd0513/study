@@ -14,3 +14,6 @@ model.add(Dense(1,input_dim=1))
 #컴파일,훈련
 model.compile(loss='mse', optimizer='adam')
 model.fit(x,y,epochs=100)
+
+
+#loss=0.0093
