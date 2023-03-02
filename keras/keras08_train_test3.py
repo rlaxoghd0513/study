@@ -10,8 +10,7 @@ y=np.array([1,2,3,4,5,6,7,8,9,10])
 #힌트 사이킷런
 from sklearn.model_selection import train_test_split
                                                                                          #랜덤스테이트 뒤에 써진 숫자에 맞는 랜덤값 표출 랜덤으로 섞지만 한번 나온 데이터가 안바뀌게
-x_train, x_test, y_train, y_test = train_test_split( x,y, train_size=0.7, test_size=0.3, random_state=1998, shuffle=True) #shuffle false로 하면 섞지 않고 순서대로나온다
-
+x_train, x_test, y_train, y_test = train_test_split( x,y, train_size=0.7, test_size=0.3, random_state=1998, shuffle=True) #shuffle false로 하면 섞지 않고 순서대로나온다 t/f 대문자로
 print(x_train)
 print(x_test)
 
@@ -37,6 +36,6 @@ print('loss=', loss)
 result=model.predict([11])
 print('[11]의 결과값=', result)
 
-#결과값 [[10.959655]] mae epochs 100 baych 10 1356421
+#결과값 [[10.959655]] mae epochs 100 batch 10 1356421
      #  [[11.001669]] mse epochs 200 batch 10 13565421
      
