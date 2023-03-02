@@ -38,3 +38,5 @@ result=model.predict([11])
 print('[11]의 결과값=', result)
 
 #결과값 [[10.959655]] mae epochs 100 baych 10 1356421
+     #  [[11.001669]] mse epochs 200 batch 10 13565421
+     
