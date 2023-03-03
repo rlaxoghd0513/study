@@ -26,7 +26,7 @@ model.add(Dense(2))
 model.add(Dense(1))
 
 #컴파일 훈련
-model.compile(loss='mse', optimizer='adam')
+model.compile(loss='mae', optimizer='adam')
 model.fit(x_train, y_train, epochs=200, batch_size=10)
 
 #평가 예측
