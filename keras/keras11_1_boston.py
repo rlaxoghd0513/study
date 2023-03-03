@@ -10,7 +10,7 @@ from tensorflow.keras.layers import Dense
 import numpy as np
 from sklearn.model_selection import train_test_split
 
-x_train, x_test, y_train, y_test=train_test_split(x,y,train_size=0.7, random_state=187, shuffle=True)
+x_train, x_test, y_train, y_test=train_test_split(x,y,train_size=0.7, random_state=77, shuffle=True)
 
 
 # print(x)
@@ -22,7 +22,7 @@ x_train, x_test, y_train, y_test=train_test_split(x,y,train_size=0.7, random_sta
 
 # print(datasets.DESCR) #instace 예시 attribute 특성
 
-# print(x.shape, y.shape) #(504, 13) (506, )
+# print(x.shape, y.shape) #(504, 13) (504, )
 
 #[실습]
 # 1. train 0.7
@@ -32,18 +32,18 @@ x_train, x_test, y_train, y_test=train_test_split(x,y,train_size=0.7, random_sta
 
 #모델구성
 model=Sequential()
-model.add(Dense(20, input_dim=13))
-model.add(Dense(25))
-model.add(Dense(33))
-model.add(Dense(38))
-model.add(Dense(31))
-model.add(Dense(24))
-model.add(Dense(13))
+model.add(Dense(5, input_dim=13))
+model.add(Dense(5))
+model.add(Dense(9))
+model.add(Dense(5))
+model.add(Dense(6))
+model.add(Dense(5))
+model.add(Dense(3))
 model.add(Dense(1))
 
 #컴파일 훈련
 model.compile(loss='mse', optimizer='adam')
-model.fit(x_train, y_train, epochs=50, batch_size=32)
+model.fit(x_train, y_train, epochs=100, batch_size=1)
 
 #평가예측
 loss=model.evaluate(x_test, y_test)
