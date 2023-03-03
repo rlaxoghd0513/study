@@ -15,21 +15,21 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
 from sklearn.model_selection import train_test_split
 
-x_train, x_test, y_train,y_test=train_test_split(x,y,random_state=150,train_size=0.7, shuffle=True)
+x_train, x_test, y_train,y_test=train_test_split(x,y,random_state=175 ,train_size=0.9, shuffle=True)
 
 model=Sequential()
-model.add(Dense(16, input_dim=8))
-model.add(Dense(30))
-model.add(Dense(36))
-model.add(Dense(41))
-model.add(Dense(36))
-model.add(Dense(33))
+model.add(Dense(10, input_dim=8))
+model.add(Dense(15))
 model.add(Dense(20))
+model.add(Dense(25))
+model.add(Dense(20))
+model.add(Dense(15))
 model.add(Dense(10))
+model.add(Dense(5))
 model.add(Dense(1))
 
 model.compile(loss='mse', optimizer='adam')
-model.fit(x_train,y_train, epochs=100, batch_size=20649)
+model.fit(x_train,y_train, epochs=130, batch_size=27)
 
 loss=model.evaluate(x_test,y_test)
 print('loss=', loss)
