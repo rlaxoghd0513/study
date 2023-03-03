@@ -16,22 +16,22 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
 from sklearn.model_selection import train_test_split
 
-x_train, x_test, y_train, y_test = train_test_split(x,y, train_size=0.8, random_state=10, shuffle=True)
+x_train, x_test, y_train, y_test = train_test_split(x,y, train_size=0.9, random_state=131, shuffle=True)
 
 model=Sequential()
-model.add(Dense(33, input_dim=10))
-model.add(Dense(44))
-model.add(Dense(55))
-model.add(Dense(66))
-model.add(Dense(88))
-model.add(Dense(67))
-model.add(Dense(51))
-model.add(Dense(25))
+model.add(Dense(12, input_dim=10))
+model.add(Dense(15))
+model.add(Dense(17))
+model.add(Dense(20))
+model.add(Dense(21))
+model.add(Dense(15))
+model.add(Dense(13))
+model.add(Dense(8))
 model.add(Dense(1))
 
 #컴파일 훈련
 model.compile(loss='mse', optimizer='adam')
-model.fit(x_train, y_train, epochs=100 , batch_size=200)
+model.fit(x_train, y_train, epochs=100 , batch_size=4)
 
 #평가 예측
 loss=model.evaluate(x_test, y_test)
