@@ -66,7 +66,7 @@ y = train_csv['count']
 print(y) #pandas 데이터분리형태
 #==================================train_csv데이터에서 x와 y를 분리================================
 
-x_train, x_test, y_train, y_test = train_test_split(x,y,shuffle=True, random_state=158714, train_size=0.8)
+x_train, x_test, y_train, y_test = train_test_split(x,y,shuffle=True, random_state=2033, train_size=0.8)
 print(x_train.shape, x_test.shape) #(1021,9) (438,9)   (929, 9) (399, 9)
 print(y_train.shape, y_test.shape) #(1021,) (438,)     (929,) (399,)
 
@@ -107,16 +107,16 @@ print("RMSE :", rmse)
 ########submission.csv를 만들어봅시다######
 # print(test_csv.isnull().sum())  여기도 결측치가 있음
 
-# y_submit = model.predict(test_csv)
-# print(y_submit)
+y_submit = model.predict(test_csv)
+print(y_submit)
 
-# submission = pd.read_csv(path+'submission.csv',index_col=0)
+submission = pd.read_csv(path+'submission.csv',index_col=0)
                     
-# print(submission)
-# submission['count'] = y_submit
-# print(submission)
+print(submission)
+submission['count'] = y_submit
+print(submission)
 
-# submission.to_csv(path+'submit_0306_0555.csv') #csv로 내보내기
+submission.to_csv(path+'submit_0306_0559.csv') #csv로 내보내기
 
 
 
