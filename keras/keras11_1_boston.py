@@ -10,7 +10,7 @@ from tensorflow.keras.layers import Dense
 import numpy as np
 from sklearn.model_selection import train_test_split
 
-x_train, x_test, y_train, y_test=train_test_split(x,y,train_size=0.7, random_state=77, shuffle=True)
+x_train, x_test, y_train, y_test=train_test_split(x,y,train_size=0.7, random_state=9010, shuffle=True)
 
 
 # print(x)
@@ -32,18 +32,18 @@ x_train, x_test, y_train, y_test=train_test_split(x,y,train_size=0.7, random_sta
 
 #모델구성
 model=Sequential()
-model.add(Dense(5, input_dim=13))
-model.add(Dense(5))
+model.add(Dense(14, input_dim=13))
+model.add(Dense(11))
 model.add(Dense(9))
-model.add(Dense(5))
-model.add(Dense(6))
+model.add(Dense(8))
+model.add(Dense(7))
 model.add(Dense(5))
 model.add(Dense(3))
 model.add(Dense(1))
 
 #컴파일 훈련
 model.compile(loss='mse', optimizer='adam')
-model.fit(x_train, y_train, epochs=100, batch_size=1)
+model.fit(x_train, y_train, epochs=100, batch_size=8)
 
 #평가예측
 loss=model.evaluate(x_test, y_test)

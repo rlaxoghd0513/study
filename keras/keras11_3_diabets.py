@@ -43,3 +43,4 @@ from sklearn.metrics import r2_score
 r2 = r2_score(y_test, y_predict) #훈련시키지 않은 데이터로 평가예측
 
 print('r2스코어 :', r2)
+#r2는 보조 loss와 함께 판단해야함
