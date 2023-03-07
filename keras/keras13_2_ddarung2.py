@@ -9,6 +9,7 @@ import pandas as pd #가져온 데이터를 파이썬에서 이용할 때 사용
 
 #데이터
 path = './_data/ddarung/' #.하나는 현재폴더(작업폴더) 현재는 study 폴더, /은 밑에
+path_save= './_save/ddarung/'
 
 
 #원래는 이렇게 써야됨 문자+문자는 합쳐짐
@@ -104,10 +105,10 @@ def RMSE(y_test, y_predict):     #함수정의
 rmse = RMSE(y_test, y_predict)    #RMSE 함수 사용
 print("RMSE :", rmse)
 
-########submission.csv를 만들어봅시다######
+########submission.csv를 만들어봅시다###### 
 # print(test_csv.isnull().sum())  여기도 결측치가 있음
 
-y_submit = model.predict(test_csv)
+y_submit = model.predict(test_csv) #submit 제출
 print(y_submit)
 
 submission = pd.read_csv(path+'submission.csv',index_col=0)
@@ -116,7 +117,7 @@ print(submission)
 submission['count'] = y_submit
 print(submission)
 
-submission.to_csv(path+'submit_0306_0559.csv') #csv로 내보내기
+submission.to_csv(path_save+'submit_0306_0559.csv') #csv로 내보내기
 
 
 
