@@ -70,6 +70,13 @@ y_predict = model.predict(x_test)
 r2= r2_score(y_test, y_predict)
 print('r2스코어:', r2)
 
+#rmse만들기
+def RMSE(y_test, y_predict):
+    return np.sqrt(mean_squared_error(y_test,y_predict))
+rmse = RMSE(y_test, y_predict)
+print('RMSE:', rmse)
+
+
 import matplotlib.pyplot as plt
 plt.rcParams['font.family']='Malgun Gothic'
 
@@ -84,11 +91,6 @@ plt.legend()
 plt.grid()
 plt.show()
 
-#rmse만들기
-def RMSE(y_test, y_predict):
-    return np.sqrt(mean_squared_error(y_test,y_predict))
-rmse = RMSE(y_test, y_predict)
-print('RMSE:', rmse)
 
 #submit
 
