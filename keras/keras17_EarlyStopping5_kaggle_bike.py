@@ -1,6 +1,6 @@
 import numpy as np
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense
+from tensorflow.python.keras.models import Sequential
+from tensorflow.python.keras.layers import Dense
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score, mean_squared_error
@@ -33,24 +33,9 @@ x = train_csv.drop(['casual','registered','count'], axis=1)
 
 y= train_csv['count']
 
-print(x.shape) #(10886, 8)
-print(y.shape) #(10886, )1
-
-print(train_csv.info())
-#  0   season      10886 non-null  int64
-#  1   holiday     10886 non-null  int64
-#  2   workingday  10886 non-null  int64
-#  3   weather     10886 non-null  int64
-#  4   temp        10886 non-null  float64
-#  5   atemp       10886 non-null  float64
-#  6   humidity    10886 non-null  int64
-#  7   windspeed   10886 non-null  float64
-#  8   casual      10886 non-null  int64
-#  9   registered  10886 non-null  int64
-#  10  count       10886 non-null  int64
 
 
-x_train, x_test, y_train, y_test = train_test_split(x,y, shuffle=True, random_state=3333, train_size=0.7)
+x_train, x_test, y_train, y_test = train_test_split(x,y, shuffle=True, random_state=1234, train_size=0.7)
 print(x_train.shape, x_test.shape) #(7620, 8), (3266,8)
 print(y_train.shape, y_test.shape) #(7620, ), (3266, )
 
@@ -59,18 +44,22 @@ print(y_train.shape, y_test.shape) #(7620, ), (3266, )
 #relu 양수는 양수로 음수는 0으로 최종레이어에는 잘 쓰지 않는다
 #linear 있으나마나 
 model=Sequential()
-model.add(Dense(20, input_dim=8))
-model.add(Dense(38))
-model.add(Dense(52))
-model.add(Dense(77, activation = 'linear'))#디폴트값
-model.add(Dense(54, activation = 'relu'))
-model.add(Dense(22, activation = 'relu'))
-model.add(Dense(11, activation = 'relu'))
+model.add(Dense(10, input_dim=8))
+model.add(Dense(12))
+model.add(Dense(15))
+model.add(Dense(20, activation = 'linear'))#디폴트값
+model.add(Dense(18, activation = 'relu'))
+model.add(Dense(14, activation = 'relu'))
+model.add(Dense(8, activation = 'relu'))
 model.add(Dense(1))
 
 #컴파일 훈련
 model.compile(loss='mse', optimizer= 'adam')
-model.fit(x_train, y_train, batch_size=32, epochs=100, verbose=1,validation_split=0.2)
+from tensorflow.python.keras.callbacks import EarlyStopping
+es= EarlyStopping(monitor='val_loss', mode='min', patience=20, verbose=1, restore_best_weights=True)
+hist =model.fit(x_train, y_train, batch_size=32, epochs=200, verbose=1,validation_split=0.2, callbacks=[es])
+print(hist.history['val_loss'])
+
 
 #평가 예측
 loss= model.evaluate(x_test, y_test)
@@ -80,6 +69,20 @@ y_predict = model.predict(x_test)
 
 r2= r2_score(y_test, y_predict)
 print('r2스코어:', r2)
+
+import matplotlib.pyplot as plt
+plt.rcParams['font.family']='Malgun Gothic'
+
+plt.figure(figsize=(9,6))
+plt.plot(hist.history['loss'], marker='.', c='red', label='로스')
+plt.plot(hist.history['val_loss'], marker='.', c='blue', label='발_로스')
+
+plt.title('캐글자전거')
+plt.xlabel('epochs')
+plt.ylabel('loss, val_loss')
+plt.legend()
+plt.grid()
+plt.show()
 
 #rmse만들기
 def RMSE(y_test, y_predict):
@@ -98,4 +101,4 @@ print(submission)
 submission['count'] = y_submit
 print(submission)
 
-submission.to_csv(path_save + 'submit_0307_1440.csv')
+submission.to_csv(path_save + 'submit_0308_1755.csv')
