@@ -67,20 +67,19 @@ y = train_csv['count']
 print(y) #pandas 데이터분리형태
 #==================================train_csv데이터에서 x와 y를 분리================================
 
-x_train, x_test, y_train, y_test = train_test_split(x,y,shuffle=True, random_state=1234, train_size=0.8)
+x_train, x_test, y_train, y_test = train_test_split(x,y,shuffle=True, random_state=501, train_size=0.8)
 print(x_train.shape, x_test.shape) #(1021,9) (438,9)   (929, 9) (399, 9)
 print(y_train.shape, y_test.shape) #(1021,) (438,)     (929,) (399,)
 
 #모델구성
 model=Sequential()
 model.add(Dense(13, input_dim=9))           #nan과 0은 다르다  
-model.add(Dense(15))
-model.add(Dense(17))
-model.add(Dense(20))
-model.add(Dense(23))
+model.add(Dense(16))
 model.add(Dense(19))
-model.add(Dense(13))
-model.add(Dense(8))
+model.add(Dense(22))
+model.add(Dense(18,activation='relu'))
+model.add(Dense(12,activation='relu'))
+model.add(Dense(8,activation='relu'))
 model.add(Dense(1))
 
 #컴파일, 훈련
@@ -88,7 +87,7 @@ model.add(Dense(1))
 model.compile(loss='mse', optimizer='adam')
 
 from tensorflow.python.keras.callbacks import EarlyStopping
-es=EarlyStopping(monitor = 'val_loss', patience=10, mode='min', verbose=1,restore_best_weights=True)
+es=EarlyStopping(monitor = 'val_loss', patience=20, mode='min', verbose=1,restore_best_weights=True)
 hist = model.fit(x_train, y_train, epochs=150, batch_size=16, verbose=1, validation_split=0.2, callbacks=[es])
 
 #평가 예측
@@ -117,6 +116,8 @@ def RMSE(y_test, y_predict):
     return np.sqrt(mean_squared_error(y_test, y_predict))  
 rmse = RMSE(y_test, y_predict)    
 print("RMSE :", rmse)
+#r2스코어 : 0.5481695409000246
+#RMSE : 50.594873640135745
 
 
 y_submit = model.predict(test_csv) 
@@ -128,4 +129,4 @@ print(submission)
 submission['count'] = y_submit
 print(submission)
 
-submission.to_csv(path_save+'submit_0308_1759.csv') 
+submission.to_csv(path_save+'submit_0308_1855.csv') 

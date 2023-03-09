@@ -77,30 +77,30 @@ rmse = RMSE(y_test, y_predict)
 print('RMSE:', rmse)
 
 
-import matplotlib.pyplot as plt
-plt.rcParams['font.family']='Malgun Gothic'
+# import matplotlib.pyplot as plt
+# plt.rcParams['font.family']='Malgun Gothic'
 
-plt.figure(figsize=(9,6))
-plt.plot(hist.history['loss'], marker='.', c='red', label='로스')
-plt.plot(hist.history['val_loss'], marker='.', c='blue', label='발_로스')
+# plt.figure(figsize=(9,6))
+# plt.plot(hist.history['loss'], marker='.', c='red', label='로스')
+# plt.plot(hist.history['val_loss'], marker='.', c='blue', label='발_로스')
 
-plt.title('캐글자전거')
-plt.xlabel('epochs')
-plt.ylabel('loss, val_loss')
-plt.legend()
-plt.grid()
-plt.show()
+# plt.title('캐글자전거')
+# plt.xlabel('epochs')
+# plt.ylabel('loss, val_loss')
+# plt.legend()
+# plt.grid()
+# plt.show()
 
 
-#submit
+# #submit
 
-y_submit = model.predict(test_csv)
-print(y_submit)
+# y_submit = model.predict(test_csv)
+# print(y_submit)
 
-submission = pd.read_csv(path + 'samplesubmission.csv', index_col =0)
+# submission = pd.read_csv(path + 'samplesubmission.csv', index_col =0)
 
-print(submission)
-submission['count'] = y_submit
-print(submission)
+# print(submission)
+# submission['count'] = y_submit
+# print(submission)
 
-submission.to_csv(path_save + 'submit_0308_1755.csv')
+# submission.to_csv(path_save + 'submit_0308_1755.csv')
