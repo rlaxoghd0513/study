@@ -16,7 +16,9 @@ y=datasets.target
 print(x.shape, y.shape)  #(569, 30) (569,)
 # print(y)
 
+
 x_train, x_test, y_train, y_test = train_test_split(x,y, random_state= 123, train_size=0.8, shuffle=True)
+
 
 #모델구성
 model = Sequential()

@@ -64,4 +64,4 @@ submission = pd.read_csv(path+'sample_submission.csv',index_col=0)
 submission['Outcome'] = y_submit
 # print(submission)
 
-submission.to_csv(path_save+'submit_0309_1318.csv')
+submission.to_csv(path_save+'submit_0309_1434.csv')
