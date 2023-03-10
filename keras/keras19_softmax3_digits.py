@@ -37,8 +37,11 @@ model.fit(x_train, y_train, epochs=10, batch_size = 1, validation_split = 0.2, v
 results = model.evaluate(x_test, y_test)
 print('results:', results)
 
-y_predict = np.round(model.predict(x_test))
+y_predict = model.predict(x_test)
 print(y_predict)
-acc=accuracy_score(y_test, y_predict)
+y_test_acc = np.argmax(y_test, axis=1)
+y_predict_acc = np.argmax(y_predict, axis=1)
+
+acc=accuracy_score(y_test_acc, y_predict_acc)
 print('acc:',acc)
 

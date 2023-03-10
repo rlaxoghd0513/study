@@ -33,13 +33,18 @@ model.add(Dense(3, activation = 'softmax'))
 
 model.compile(loss='categorical_crossentropy', optimizer='adam',metrics=['acc'])  
 model.fit(x_train, y_train, epochs=10, batch_size = 1, validation_split = 0.2, verbose=1)
+print(y_train.shape) #(142,3)
+print(y_test.shape) #(36, 3)
+
 
 results = model.evaluate(x_test, y_test)
 print('results:', results)
+y_predict = model.predict(x_test)
 
-y_predict = np.round(model.predict(x_test))
+y_test_acc = np.argmax(y_test, axis=1)
+y_predict_acc = np.argmax(y_predict, axis = 1) #np.argmax() 가장 높은걸 위치를 잡아주겠다  그래서 2가 나온다
 print(y_predict)
-acc=accuracy_score(y_test, y_predict)
+acc=accuracy_score(y_test_acc, y_predict_acc)
 print('acc:',acc)
 
 

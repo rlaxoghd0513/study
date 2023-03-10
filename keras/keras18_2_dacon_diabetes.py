@@ -23,7 +23,7 @@ print(x) #[652 rows x 8 columns]
 
 y = train_csv['Outcome']
 
-x_train, x_test, y_train, y_test = train_test_split(x,y, random_state=1489, shuffle=True, train_size=0.9)
+x_train, x_test, y_train, y_test = train_test_split(x,y, random_state=5455, shuffle=True, train_size=0.9)
 print(x_train.shape, x_test.shape)
 print(y_train.shape, y_test.shape)
 #(521, 8) (131, 8)
@@ -31,20 +31,19 @@ print(y_train.shape, y_test.shape)
 
 #모델구성
 model=Sequential()
-model.add(Dense(15,input_dim=8))
-model.add(Dense(12))
-model.add(Dense(14))
-model.add(Dense(18))
-model.add(Dense(18))
-model.add(Dense(18))
-model.add(Dense(11,activation='relu'))
-model.add(Dense(6,activation='relu'))
+model.add(Dense(9,input_dim=8))
+model.add(Dense(8))
+model.add(Dense(7))
+model.add(Dense(6))
+model.add(Dense(5))
+model.add(Dense(4,activation='relu'))
+model.add(Dense(3,activation='relu'))
 model.add(Dense(1, activation='sigmoid'))
 
 #컴파일 훈련
 model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
-es=EarlyStopping(monitor='val_loss', patience=20, mode='min',verbose=1, restore_best_weights=True)
-model.fit(x_train,y_train, epochs=1000, batch_size=8, validation_split=0.2, callbacks=[es])
+es=EarlyStopping(monitor='val_loss', patience=30, mode='min', verbose=1, restore_best_weights=True)
+model.fit(x_train,y_train, epochs=1000, batch_size=16, validation_split=0.1, callbacks=[es])
 
 #평가 에측
 results = model.evaluate(x_test, y_test)
@@ -64,4 +63,4 @@ submission = pd.read_csv(path+'sample_submission.csv',index_col=0)
 submission['Outcome'] = y_submit
 # print(submission)
 
-submission.to_csv(path_save+'submit_0309_1434.csv')
+submission.to_csv(path_save+'submit_0310_1812.csv')

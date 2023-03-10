@@ -68,14 +68,32 @@ model.add(Dense(3, activation = 'softmax')) #다중분류에서 무조건 softma
 model.compile(loss='categorical_crossentropy', optimizer='adam',metrics=['acc'])  #다중분류에서 loss는 
 model.fit(x_train, y_train, epochs=10, batch_size = 1, validation_split = 0.2, verbose=1)
 
+#4 평가 예측
+# accuracy_score를 사용해서 스코어를 빼세요 밑에랑 비교 
+# results = model.evaluate(x_test, y_test)
+# print('results:', results)
 
-# accuracy_score를 사용해서 스코어를 빼세요
-results = model.evaluate(x_test, y_test)
-print('results:', results)
+# y_predict = np.round(model.predict(x_test))
+# print(y_predict)
+# acc=accuracy_score(y_test, y_predict)
+# print('acc:',acc)
+###################################################
+#4. 평가 예측
+results = model.evaluate(x_test, y_test) #단축기 ctrl+space  loss로 안짓고 results로 짓는 이유: 결과가 여러개가 나오기 때문
+print(results)    
+print('loss:', results[0])
+print('acc:',results[1])
 
-y_predict = np.round(model.predict(x_test))
-print(y_predict)
-acc=accuracy_score(y_test, y_predict)
-print('acc:',acc)
+y_predict = model.predict(x_test)
+# print(y.test.shape) #(30,3)
+# print(y_predict.shape) 
+# ########소프트 맥스의 결과는 0.1 0.2 0.7이런식으로
+# print(y_test[:5])
+# print(y_predict[:5])
+y_test_acc = np.argmax(y_test, axis=1) #각 행에 있는 열끼리 비교 
+y_pred = np.argmax(y_predict, axis = 1) #가독성을 위해 위에서 argmax 씌우지말고 한번 더 쓰는게 좋다
+                                           #값들이 y_test, y_predict 둘다 예측값으로 바뀌어 있어야 한다
+acc = accuracy_score(y_test_acc, y_pred) 
+print('acc:', acc)
 
 
