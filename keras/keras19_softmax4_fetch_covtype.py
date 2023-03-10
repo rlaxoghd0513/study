@@ -17,10 +17,10 @@ print('y의 라벨값:',np.unique(y)) #[1 2 3 4 5 6 7]
 print(y)
 
 #keras 카테고리컬
-y = to_categorical(y)
-print(y.shape)       #(581012, 8)  #카테고리컬로 하면 0부터 시작해서 0라벨이 생겨서 8개가 된다
-y = np.delete(y,0,axis=1)   #y의 열에서 0번째 행을 뺀다
-print(y)   
+# y = to_categorical(y)
+# print(y.shape)       #(581012, 8)  #카테고리컬로 하면 0부터 시작해서 0라벨이 생겨서 8개가 된다  
+# y = np.delete(y,0,axis=1)   #y의 열에서 0번째 행을 뺀다
+# print(y)   
 
 #2. sklearn
 # from sklearn.preprocessing import OneHotEncoder
@@ -31,10 +31,10 @@ print(y)
 # print(type(y)) #<class 'numpy.ndarray'>
 
 #3.pandas get_dummies
-# import pandas as pd
-# y=pd.get_dummies(y)
-# print(y.shape)
-
+import pandas as pd
+y=pd.get_dummies(y)
+print(y.shape)
+print(y.__dataframe__)
 
 x_train, x_test, y_train, y_test = train_test_split(x,y, random_state =123, 
                                              shuffle = True, train_size = 0.8)
