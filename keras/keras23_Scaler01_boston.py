@@ -5,8 +5,8 @@ from tensorflow.python.keras.layers import Dense
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler #값을 0에서 1사이로 바꾸지만 standardScaler는 평균점을 중심으로 모아준다
 from sklearn.preprocessing import StandardScaler 
-from sklearn.preprocessing import MaxAbsScaler 
-from sklearn.preprocessing import RobustScaler 
+from sklearn.preprocessing import MaxAbsScaler  #
+from sklearn.preprocessing import RobustScaler  #
  
 #1 데이터
 datasets = load_boston()

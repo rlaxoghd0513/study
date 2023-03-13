@@ -4,6 +4,8 @@ from tensorflow.python.keras.layers import Dense
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score, mean_squared_error
+from tensorflow.python.keras.callbacks import EarlyStopping
+from sklearn.preprocessing import MinMaxScaler
 
 #데이터
 path = './_data/kaggle_bike/'
@@ -38,6 +40,12 @@ y= train_csv['count']
 x_train, x_test, y_train, y_test = train_test_split(x,y, shuffle=True, random_state=555, train_size=0.9)
 print(x_train.shape, x_test.shape) #(7620, 8), (3266,8)
 print(y_train.shape, y_test.shape) #(7620, ), (3266, )
+
+scaler = MinMaxScaler()
+scaler.fit(x_train)
+x_train = scaler.transform(x_train)
+x_test = scaler.transform(x_test)
+print(np.min(x_test), np.max(x_test))
 
 #모델구성
 #한정화함수 다음레이어로 전하는걸 한정시킨다
@@ -102,4 +110,4 @@ print(submission)
 submission['count'] = y_submit
 print(submission)
 
-submission.to_csv(path_save + 'submit_0310_1900.csv')
+submission.to_csv(path_save + 'submit_0313_1102.csv')

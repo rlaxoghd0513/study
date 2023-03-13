@@ -71,12 +71,12 @@ print('걸린시간:', round(end_time - start_time,2))    #훈련시키는거에
 
 
 
-# y_predict = model.predict(x_test)
-# print(y_predict.shape)
-# y_test_acc = np.argmax(y_test, axis=1)
-# print(y_test_acc)
-# y_predict_acc = np.argmax(y_predict, axis=1)
+y_predict = model.predict(x_test)
+print(y_predict.shape)
+y_test_acc = np.argmax(y_test, axis=1)
+print(y_test_acc)
+y_predict_acc = np.argmax(y_predict, axis=1)
 
 
-# acc = accuracy_score(y_test_acc, y_predict_acc)
-# print('acc:', acc)
+acc = accuracy_score(y_test_acc, y_predict_acc)
+print('acc:', acc)
