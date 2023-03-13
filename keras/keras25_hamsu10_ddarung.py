@@ -1,7 +1,7 @@
 #데이콘 따릉이 문제풀이
 import numpy as np
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense
+from tensorflow.keras.models import Sequential, Model
+from tensorflow.keras.layers import Dense, Input
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score, mean_squared_error #루트씌우기함수
 import pandas as pd #가져온 데이터를 파이썬에서 이용할 때 사용
@@ -68,7 +68,7 @@ y = train_csv['count']
 print(y) #pandas 데이터분리형태
 #==================================train_csv데이터에서 x와 y를 분리================================
 
-x_train, x_test, y_train, y_test = train_test_split(x,y,shuffle=True, random_state=7898, train_size=0.8)
+x_train, x_test, y_train, y_test = train_test_split(x,y,shuffle=True, random_state=1357, train_size=0.9)
 print(x_train.shape, x_test.shape) #(1021,9) (438,9)   (929, 9) (399, 9)
 print(y_train.shape, y_test.shape) #(1021,) (438,)     (929,) (399,)
 
@@ -81,23 +81,31 @@ print(np.min(x_test), np.max(x_test))
 test_csv = scaler.transform(test_csv)
 
 #모델구성
-model=Sequential()
-model.add(Dense(9, input_dim=9))           #nan과 0은 다르다  
-model.add(Dense(8))
-model.add(Dense(7))
-model.add(Dense(6))
-model.add(Dense(5,activation='relu'))
-model.add(Dense(4,activation='relu'))
-model.add(Dense(2,activation='relu'))
-model.add(Dense(1))
-
+# model=Sequential()
+# model.add(Dense(9, input_dim=9))           #nan과 0은 다르다  
+# model.add(Dense(8))
+# model.add(Dense(7))
+# model.add(Dense(6))
+# model.add(Dense(5,activation='relu'))
+# model.add(Dense(4,activation='relu'))
+# model.add(Dense(2,activation='relu'))
+# model.add(Dense(1))
+input1 = Input(shape=(9,))
+dense1 = Dense(10)(input1)
+dense2 = Dense(8)(dense1)
+dense3 = Dense(6)(dense2)
+dense4 = Dense(5)(dense3)
+dense5 = Dense(4, activation = 'relu')(dense4)
+dense6 = Dense(3, activation = 'relu')(dense5)
+output1 = Dense(1)(dense6)
+model = Model(inputs = input1, outputs = output1)
 #컴파일, 훈련
 
 model.compile(loss='mse', optimizer='adam')
 
 from tensorflow.python.keras.callbacks import EarlyStopping
-es=EarlyStopping(monitor = 'val_loss', patience=30, mode='min', verbose=1,restore_best_weights=True)
-hist = model.fit(x_train, y_train, epochs=1000, batch_size=1, verbose=1, validation_split=0.2, callbacks=[es])
+es=EarlyStopping(monitor = 'val_loss', patience=20, mode='min', verbose=1,restore_best_weights=True)
+hist = model.fit(x_train, y_train, epochs=500, batch_size=4, verbose=1, validation_split=0.2, callbacks=[es])
 
 #평가 예측
 loss=model.evaluate(x_test, y_test)
@@ -138,9 +146,14 @@ submission = pd.read_csv(path+'submission.csv',index_col=0)
 submission['count'] = y_submit
 # print(submission)
 
-submission.to_csv(path_save+'submit_0313_1409.csv') 
+submission.to_csv(path_save+'submit_0313_1744.csv') 
 
 #standard r2 0.74  rmse41.26
 #minmax r2 0.73  rmse42.09
 #maxabs r2 0.75  rmse 40.338   
 #robust  r2 0.73  rmse 41.63
+
+#sequential r2스코어 : 0.5682524507030704   RMSE : 56.52707543422013
+#model      r2스코어 : -0.028900351774707955  RMSE : 87.26261715284616
+#r2스코어 : 0.5807723245165846
+# RMSE : 57.0260899529738

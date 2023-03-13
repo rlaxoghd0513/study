@@ -1,14 +1,14 @@
 #input_dim 행과 열만 있는 2차원 데이터셋만 했음
 from sklearn.datasets import load_boston
 from sklearn.model_selection import train_test_split
-from tensorflow.python.keras.models import Sequential
-from tensorflow.python.keras.layers import Dense
+from tensorflow.python.keras.models import Sequential, Model  #함수형모델은 그냥 Model
+from tensorflow.python.keras.layers import Dense, Input    #함수형에서는 따로 명시해야됨
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler #값을 0에서 1사이로 바꾸지만 standardScaler는 평균점을 중심으로 모아준다
 from sklearn.preprocessing import StandardScaler 
 from sklearn.preprocessing import MaxAbsScaler  #
 from sklearn.preprocessing import RobustScaler  #
- 
+
 #1 데이터
 datasets = load_boston()
 x= datasets.data    
@@ -49,26 +49,25 @@ print(np.min(x_test), np.max(x_test))
 
 #2 모델구성
 model=Sequential()
-# model.add(Dense(1, input_dim=13))
-model.add(Dense(1, input_shape=(13, ))) #열,
+model.add(Dense(30, input_shape=(13, ), name = 'S1'))    #함수형에서는 input_layer랑 첫번재 히든레이어랑 같은 줄에 쓰면 안되고 따로 명시해야한다
+model.add(Dense(20, name ='S2'))
+model.add(Dense(10, name ='S3'))
+model.add(Dense(1, name= 'S4'))
+model.summary()
 
-#데이터가 3차원이면(통상 시계열데이터)
-#(1000,100,1) =>>> input_shape = (100,1)  맨앞에 있는게 데이터의 갯수(행) 3차원에선 면 #굳이 안따져도 됨
-
-#데이터가 4차원이면(통상 이미지 데이터)
-#(60000, 32, 32, 3) =>>> input_shape=(32,32,3)  맨앞에 있는게 데이터 갯수(행) 4차원에선 공간 #굳이 안따져도 됨
+input1 = Input(shape=(13,), name= 'h1')
+dense1 = Dense(30, name='h2')(input1) #sequential은 순서대로 함수형은 모델을 구성하고 시작이 어딘지 끝이 어딘지 마지막에 정해준다
+dense2 = Dense(20, name='h3')(dense1) #이 레이어가 어디서 왔는지 꽁다리에 
+dense3 = Dense(10, name='h4')(dense2)
+output1 = Dense(1, name='h5')(dense3) 
+model = Model(inputs = input1, outputs = output1)   #sequential은 순서대로 함수형은 모델을 구성하고 시작이 어딘지 끝이 어딘지 마지막에 정해준다
+model.summary()
 
 
 #컴파일 훈련
-model.compile(loss='mse', optimizer= 'adam')
-model.fit(x_train, y_train, epochs=100, batch_size=32)
+# model.compile(loss='mse', optimizer= 'adam')
+# model.fit(x_train, y_train, epochs=100, batch_size=32)
 
-#평가 예측
-loss = model.evaluate(x_test, y_test)
-print('loss:', loss)
-
-# y값이 수치로 나와야한다 선형회귀
-# y가 개냐 소냐 다중분류 (이진분류)
-# Sequential 위에서 아래로만 내려간다
-# 모델들 여러개를 만들어 합친다 Sequential로 가능은 한데 복잡해진다
-# 함수형 모델
+# #평가 예측
+# loss = model.evaluate(x_test, y_test)
+# print('loss:', loss)
