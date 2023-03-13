@@ -5,7 +5,7 @@ from sklearn.model_selection import train_test_split
 from tensorflow.python.keras.callbacks import EarlyStopping
 from sklearn.metrics import accuracy_score
 import pandas as pd
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import RobustScaler
 #데이터
 path = './_data/dacon_diabetes/'
 path_save = './_save/dacon_diabetes/'
@@ -28,13 +28,14 @@ x_train, x_test, y_train, y_test = train_test_split(x,y, random_state=1234, shuf
 # print(y_train.shape, y_test.shape)
 #(521, 8) (131, 8)
 #(521,) (131,)
-scaler= StandardScaler()
+scaler= RobustScaler()
 scaler.fit(x_train)
 x_train = scaler.transform(x_train)
 x_test = scaler.transform(x_test)
 print(np.min(x_test), np.max(x_test))
 
 scaler.fit(test_csv)
+
 test_csv = scaler.transform(test_csv)  #train_csv도 스케일링 했으니까 제출할 test_csv 도 마찬가지로 스케일링 해줘야한다
 
 
@@ -49,20 +50,21 @@ test_csv = scaler.transform(test_csv)  #train_csv도 스케일링 했으니까 �
 # model.add(Dense(2,activation='relu'))
 # model.add(Dense(1, activation='sigmoid'))
 input1 = Input(shape = (8,))
-dense1 = Dense(10)(input1)
-dense2 = Dense(12)(dense1)
-dense3 = Dense(10)(dense2)
-dense4 = Dense(8)(dense3)
-dense5 = Dense(6)(dense4)
-dense6 = Dense(4, activation = 'relu')(dense5)
-dense7 = Dense(2, activation='relu')(dense6)
-output1 = Dense(1,activation= 'sigmoid' )(dense7)
+dense1 = Dense(9)(input1)
+dense2 = Dense(7)(dense1)
+dense3 = Dense(5)(dense2)
+dense4 = Dense(3)(dense3)
+dense5 = Dense(2, activation = 'relu')(dense4)
+dense6 = Dense(2, activation='relu')(dense5)
+output1 = Dense(1,activation= 'sigmoid' )(dense6)
 model = Model(inputs = input1, outputs = output1)
 
 #컴파일 훈련
 model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 es=EarlyStopping(monitor='val_loss', patience=30, mode='min', verbose=1, restore_best_weights=True)
-model.fit(x_train,y_train, epochs=1000, batch_size=1, validation_split=0.2, callbacks=[es])
+model.fit(x_train,y_train, epochs=1000, batch_size=4, validation_split=0.2, callbacks=[es])
+
+model.save('./_save/diabetes_Robust.h5')
 
 #평가 에측
 results = model.evaluate(x_test, y_test)
@@ -82,9 +84,9 @@ submission = pd.read_csv(path+'sample_submission.csv',index_col=0)
 submission['Outcome'] = y_submit
 # print(submission)
 
-submission.to_csv(path_save+'submit_0313_1529.csv')
+submission.to_csv(path_save+'submit_0313_1803.csv')
 
-#minmax loss = 0.52  acc = 0.72
-#standard loss = 0.48 acc = 0.83
-#robust loss= 0.52 acc = 0.6
-#maxabs loss= 0.51 acc=0.72
+#minmax  [0.43220722675323486, 0.8333333134651184]
+#standard [0.44255587458610535, 0.8030303120613098]
+#robust  [0.4302978813648224, 0.8333333134651184]
+#maxabs   [0.6386789679527283, 0.6666666865348816]
