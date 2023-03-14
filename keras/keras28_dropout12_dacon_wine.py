@@ -1,6 +1,6 @@
 import numpy as np
-from tensorflow.python.keras.models import Model
-from tensorflow.python.keras.layers import Dense, Input
+from tensorflow.python.keras.models import Model, load_model
+from tensorflow.python.keras.layers import Dense, Input, Dropout
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 from tensorflow.python.keras.callbacks import EarlyStopping, ModelCheckpoint
@@ -8,7 +8,6 @@ import pandas as pd
 from sklearn.preprocessing import RobustScaler, StandardScaler, MaxAbsScaler, MinMaxScaler
 from sklearn.preprocessing import OneHotEncoder
 from tensorflow.keras.utils import to_categorical
-from sklearn.preprocessing import OneHotEncoder
 
 # 1. 데이터
 path = './_data/dacon_wine/'
@@ -36,8 +35,9 @@ y=to_categorical(y)
 # print(y.shape)  #(5497, 10)
 # y= np.delete(y,[0,1,2],axis=1)
 # print(y.shape)  #(5497, 7)
-# 2. sklearn
 
+
+# 2. sklearn
 # ohe = OneHotEncoder()
 # y = y.reshape(-1,1)
 # y = ohe.fit_transform(y).toarray()
@@ -46,7 +46,8 @@ y=to_categorical(y)
 
 
 
-x_train, x_test, y_train, y_test = train_test_split(x,y, random_state=123, shuffle=True, train_size = 0.8)
+x_train, x_test, y_train, y_test = train_test_split(x,y, random_state=123, shuffle=True, train_size = 0.8,
+                                                    stratify=y )
 # print(x_train.shape, x_test.shape)      (4397, 11) (1100, 11)
 # print(y_train.shape, y_test.shape)      (4397,) (1100,)
 
@@ -59,31 +60,36 @@ print(np.min(x_test), np.max(x_test))
 test_csv = scaler.transform(test_csv) 
 
 #2 모델구성
-input1 = Input(shape=(11, ))
-dense1 = Dense(15)(input1)
-dense1 = Dense(14)(input1)
-dense2 = Dense(13)(dense1)
-dense3 = Dense(11, activation='relu')(dense2)
-dense4 = Dense(8, activation='relu')(dense3)
-output1 = Dense(10, activation='softmax')(dense4)
-model = Model(inputs=input1, outputs=output1)
+# input1 = Input(shape=(11, ))
+# dense1 = Dense(200)(input1)
+# drop1 = Dropout(0.3)(dense1)
+# dense2 = Dense(260)(drop1)
+# drop2 = Dropout(0.4)(dense2)
+# dense3 = Dense(230, activation='relu')(drop2)
+# drop3 = Dropout(0.4)(dense3)
+# dense4 = Dense(220, activation='relu')(drop3)
+# output1 = Dense(10, activation='softmax')(dense4)
+# model = Model(inputs=input1, outputs=output1)
 
-#3 컴파일 훈련
-model.compile(loss='categorical_crossentropy', optimizer='adam', metrics = ['acc'])
+# #3 컴파일 훈련
+# model.compile(loss='categorical_crossentropy', optimizer='adam', metrics = ['acc'])
 
-import datetime
-date = datetime.datetime.now()  #현재시간을 date에 넣어준다
-print(date)  #2023-03-14 11:10:57.992357
-date = date.strftime("%m%d_%H%M") #시간을 문자데이터로 바꾸겠다 그래야 파일명에 넣을 수 있다    %뒤에있는값을 반환해달라
-print(date)  #0314_1116
+# import datetime
+# date = datetime.datetime.now()  #현재시간을 date에 넣어준다
+# print(date)  #2023-03-14 11:10:57.992357
+# date = date.strftime("%m%d_%H%M") #시간을 문자데이터로 바꾸겠다 그래야 파일명에 넣을 수 있다    %뒤에있는값을 반환해달라
+# print(date)  #0314_1116
 
-filepath = './_save/MCP/dacon_wine/'
-filename = '{epoch:04d}-{val_loss:.4f}.hdf5'
+# filepath = './_save/MCP/dacon_wine/'
+# filename = '{epoch:04d}-{val_loss:.4f}.hdf5'
 
-es = EarlyStopping(monitor='val_loss', mode='min', patience=50, verbose=1, restore_best_weights=True)
-mcp = ModelCheckpoint(monitor = 'val_loss', mode= 'auto', save_best_only=True, filepath ="".join([filepath,'DW_',date,'_',filename]))
+# es = EarlyStopping(monitor='val_loss', mode='min', patience=50, verbose=1, restore_best_weights=True)
+# mcp = ModelCheckpoint(monitor = 'val_loss', mode= 'auto', save_best_only=True, filepath ="".join([filepath,'DW_',date,'_',filename]))
 
-model.fit(x_train, y_train, batch_size=32, epochs=1000,callbacks=[es,mcp], validation_split=0.2)
+# model.fit(x_train, y_train, batch_size=32, epochs=1000,callbacks=[es,mcp], validation_split=0.2)
+
+model = load_model('_save\MCP\dacon_wine\DW_0314_1828_0053-1.0225.hdf5')
+model.fit(x_train, y_train, batch_size=32, epochs=50, validation_split=0.2)
 
 # 4 평가예측
 results = model.evaluate(x_test, y_test)
@@ -100,16 +106,19 @@ print('acc:', acc)
 
 # 5 서밋
 
-y_submit = np.argmax(model.predict(test_csv), axis=1) #submit 제출
+y_submit = model.predict(test_csv) #submit 제출
 # print(y_submit)
+y_submit = np.argmax(y_submit, axis=1)
 
 submission = pd.read_csv(path+'sample_submission.csv',index_col=0)
+
                     
 # print(submission)
 submission['quality'] = y_submit
 # print(submission)
 
-submission.to_csv(path_save+'submit_0314_1658.csv')
+
+submission.to_csv(path_save+'submit_0314_1839.csv')
 
 
 
