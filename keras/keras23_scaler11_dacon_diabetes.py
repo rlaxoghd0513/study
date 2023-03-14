@@ -34,7 +34,7 @@ x_train = scaler.transform(x_train)
 x_test = scaler.transform(x_test)
 print(np.min(x_test), np.max(x_test))
 
-scaler.fit(test_csv)
+
 test_csv = scaler.transform(test_csv)  #train_csv도 스케일링 했으니까 제출할 test_csv 도 마찬가지로 스케일링 해줘야한다
 
 
