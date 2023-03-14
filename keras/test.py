@@ -30,6 +30,7 @@ test_csv = test_csv.drop(['type'],axis = 1)
 
 #print( np.unique(y)) #[3 4 5 6 7 8 9] 7개
 
+#====================================사이킷런 원핫 인코딩=======================================================
 ohe = OneHotEncoder()
 print(type(y))   #<class 'pandas.core.series.Series'>
 print(y) 
@@ -65,9 +66,17 @@ print(y)
 
 y = ohe.fit_transform(y).toarray()
 print(y)
+# [[0. 0. 1. ... 0. 0. 0.]
+#  [0. 0. 1. ... 0. 0. 0.]
+#  [0. 0. 1. ... 0. 0. 0.]
+#  ...
+#  [0. 0. 0. ... 1. 0. 0.]
+#  [0. 0. 1. ... 0. 0. 0.]
+#  [0. 0. 0. ... 0. 0. 0.]]
 
 
 print(y.shape)   #(5497, 7)
+#============================================================================================
 
 x_train, x_test, y_train, y_test = train_test_split(
     x,y, shuffle= True, random_state= 1742, train_size= 0.7, stratify=y)
@@ -123,18 +132,3 @@ y_predict = np.argmax(y_predict, axis =-1)
 acc = accuracy_score(y_test_acc, y_predict)
 print('Accuary score : ', acc)
 
-# quality                 0
-# fixed acidity           0
-# volatile acidity        0
-# citric acid             0
-# residual sugar          0
-# chlorides               0
-# free sulfur dioxide     0
-# total sulfur dioxide    0
-# density                 0
-# pH                      0
-# sulphates               0
-# alcohol                 0
-# type                    0
-# dtype: int64
-# <class 'pandas.core.series.Series'>
