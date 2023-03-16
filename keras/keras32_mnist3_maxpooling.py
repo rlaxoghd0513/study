@@ -11,7 +11,6 @@ from sklearn.metrics import accuracy_score
 x_train = x_train.reshape(60000,784)
 x_test = x_test.reshape(10000,784)
 
-print(x_train.feature_names)
 
 scaler = MinMaxScaler()
 scaler.fit(x_train)

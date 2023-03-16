@@ -23,7 +23,7 @@ print(x) #[652 rows x 8 columns]
 
 y = train_csv['Outcome']
 
-x_train, x_test, y_train, y_test = train_test_split(x,y, random_state=1234, shuffle=True, train_size=0.9)
+x_train, x_test, y_train, y_test = train_test_split(x,y, random_state=330, shuffle=True, train_size=0.9)
 # print(x_train.shape, x_test.shape)
 # print(y_train.shape, y_test.shape)
 #(521, 8) (131, 8)
@@ -40,13 +40,14 @@ test_csv = scaler.transform(test_csv)  #train_csv도 스케일링 했으니까 �
 
 input1 = Input(shape = (8,))
 dense1 = Dense(10)(input1)
-drop1=Dropout(0.2)(dense1)
+drop1=Dropout(0.3)(dense1)
 dense2 = Dense(8)(drop1)
 dense3 = Dense(7)(dense2)
 dense4 = Dense(6)(dense3)
-drop4 = Dropout(0.1)(dense4)
+drop4 = Dropout(0.3)(dense4)
 dense5 = Dense(5, activation = 'relu')(drop4)
-dense6 = Dense(2, activation='relu')(dense5)
+drop5 = Dropout(0.2)(dense5)
+dense6 = Dense(3, activation='relu')(drop5)
 output1 = Dense(1,activation= 'sigmoid' )(dense6)
 model = Model(inputs = input1, outputs = output1)
 
@@ -63,7 +64,7 @@ filename = '{epoch:04d}-{val_loss:.4f}.hdf5'
 es=EarlyStopping(monitor = 'val_loss', patience=60, mode='min', verbose=1,restore_best_weights=True)
 mcp = ModelCheckpoint(monitor = 'val_loss', mode= 'auto', save_best_only=True, verbose=1, filepath ="".join([filepath,'dia_',date,'_',filename]))
 
-model.fit(x_train,y_train, epochs=10000, batch_size=4, validation_split=0.2, callbacks=[es,mcp])
+model.fit(x_train,y_train, epochs=10000, batch_size=1, validation_split=0.2, callbacks=[es,mcp])
 
 
 #평가 에측
@@ -84,7 +85,7 @@ submission = pd.read_csv(path+'sample_submission.csv',index_col=0)
 submission['Outcome'] = y_submit
 # print(submission)
 
-submission.to_csv(path_save+'submit_0315_1428.csv')
+submission.to_csv(path_save+'diabetes_'+date+'.csv')
 
 # results: [0.4140123128890991, 0.8030303120613098]
 # results: [0.41638749837875366, 0.8181818127632141]

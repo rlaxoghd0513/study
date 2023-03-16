@@ -44,29 +44,6 @@ y=train_csv['quality']
 print('y라벨값:',np.unique(y))  # [3 4 5 6 7 8 9]
 
 
-# =======================================이상치 확인제거  # train_csv['quality'].quantile(0.75) 처럼 특정 열만 적용 가능
-q3 = train_csv['quality'].quantile(0.75)    
-q1 = train_csv['quality'].quantile(0.25)
-
-iqr = q3 - q1
-
-print(q3)   #6.0
-print(q1)    #5.0
-print(iqr)    #1.0
-
-upper_bound = q3 + 1.5 * iqr
-lower_bound = q1 - 1.5 * iqr
-
-# train_csv_iqr =train_csv['quality']>q3+1.5*iqr
-train_csv_iqr=train_csv[(train_csv['quality'] >= lower_bound) & (train_csv['quality'] <= upper_bound)]
-train_csv = train_csv_iqr
-y= train_csv['quality']
-x= train_csv.drop(['quality'], axis=1)
-print(x.shape)    # (5340, 12)
-print(y.shape)   # (5340,)
-print('y라벨값:', np.unique(y))
-
-
 
 #============================원핫인코딩================================
 ohe= OneHotEncoder()
@@ -108,13 +85,13 @@ test_csv = scaler.transform(test_csv)
 # 2 모델구성
 input1 = Input(shape=(12, ))
 dense1 = Dense(128)(input1)
-drop1 = Dropout(0.25)(dense1)
+drop1 = Dropout(0.3)(dense1)
 dense2 = Dense(64)(drop1)
 dense3 = Dense(32, activation='relu')(dense2)
-drop3 = Dropout(0.25)(dense3)
+drop3 = Dropout(0.3)(dense3)
 dense4 = Dense(64, activation='relu')(drop3)
-drop4 = Dropout(0.25)(dense4)
-output1 = Dense(4, activation='softmax')(drop4)
+drop4 = Dropout(0.3)(dense4)
+output1 = Dense(7, activation='softmax')(drop4)
 model = Model(inputs=input1, outputs=output1)
 
 #3 컴파일 훈련
@@ -130,9 +107,9 @@ filepath = './_save/MCP/dacon_wine/'
 filename = '{epoch:04d}-{val_loss:.4f}.hdf5'
 
 es = EarlyStopping(monitor='val_loss', mode='min', patience=300, verbose=1, restore_best_weights=True)
-mcp = ModelCheckpoint(monitor = 'val_loss', mode= 'auto', save_best_only=True, filepath ="".join([filepath,'DW_',date,'_',filename]), verbose=1)
+# mcp = ModelCheckpoint(monitor = 'val_loss', mode= 'auto', save_best_only=True, filepath ="".join([filepath,'DW_',date,'_',filename]), verbose=1)
 
-model.fit(x_train, y_train, batch_size=55, epochs=50,callbacks=[es,mcp], validation_split=0.2)
+model.fit(x_train, y_train, batch_size=55, epochs=50,callbacks=[es], validation_split=0.2) #mcp쓸거면 콜백에 넣으면 됨
 
 
 

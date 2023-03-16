@@ -27,30 +27,30 @@ y_test = to_categorical(y_test)
 
 #2 모델구성
 model = Sequential()
-model.add(Conv2D(8, (2,2), padding='same', input_shape=(32,32,3)))
+model.add(Conv2D(8, (3,3), padding='same', input_shape=(32,32,3)))
 model.add(Conv2D(8,2))
 model.add(MaxPooling2D())    #커널처럼 중첩되지 않고 각 구역에서 가장 큰 애만 뽑는다
-model.add(Conv2D(16, (3,3), padding='same', activation='relu'))
-model.add(Conv2D(8,3))
-model.add(MaxPooling2D())    #커널처럼 중첩되지 않고 각 구역에서 가장 큰 애만 뽑는다
-model.add(Conv2D(8, 2)) #대부분 2,2 3,3으로 커널사이즈를 하니까 귀찮아서 2,2를 2만 써도 된다
+model.summary()
+model.add(Conv2D(32, (3,3), padding='same', activation='relu'))
+model.add(Conv2D(32,3, padding='same'))
+model.add(Conv2D(32, 3, padding='same')) #대부분 2,2 3,3으로 커널사이즈를 하니까 귀찮아서 2,2를 2만 써도 된다
 model.add(Flatten())
 model.add(Dense(32))
 model.add(Dropout(0.3))
-model.add(Dense(16, activation = 'relu'))
+model.add(Dense(32, activation = 'relu'))
 model.add(Dropout(0.3))
 model.add(Dense(16))
 model.add(Dense(10, activation = 'softmax'))
 model.summary()
 
 from tensorflow.python.keras.callbacks import EarlyStopping
-es = EarlyStopping(monitor = 'val_loss', mode = 'min', patience=50, verbose=1, restore_best_weights=True)
+es = EarlyStopping(monitor = 'val_loss', mode = 'min', patience=5, verbose=1, restore_best_weights=True)
 model.compile(loss = 'categorical_crossentropy', optimizer= 'adam', metrics = ['acc'])
 
 import time
 start_time = time.time()
 
-model.fit(x_train, y_train, epochs = 10000, batch_size = 320, callbacks = [es], validation_split=0.2)
+model.fit(x_train, y_train, epochs = 100, batch_size = 320, callbacks = [es], validation_split=0.2)
 end_time = time.time()
 
 #4 평가 예측

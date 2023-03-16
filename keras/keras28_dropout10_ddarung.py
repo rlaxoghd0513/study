@@ -135,7 +135,7 @@ submission = pd.read_csv(path+'submission.csv',index_col=0)
 submission['count'] = y_submit
 # print(submission)
 
-submission.to_csv(path_save+'submit_0314_1438.csv') 
+submission.to_csv(path_save+'ddarung_'+date+'.csv') 
 # 0.62  53.11
 #  0.6599120814531592
 # RMSE : 50.73676437176139
