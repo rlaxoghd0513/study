@@ -33,7 +33,9 @@ model.add(MaxPooling2D())    #커널처럼 중첩되지 않고 각 구역에서 
 model.summary()
 model.add(Conv2D(32, (3,3), padding='same', activation='relu'))
 model.add(Conv2D(32,3, padding='same'))
-model.add(Conv2D(32, 3, padding='same')) #대부분 2,2 3,3으로 커널사이즈를 하니까 귀찮아서 2,2를 2만 써도 된다
+model.add(MaxPooling2D())
+model.add(Conv2D(128, 3, padding='same')) #대부분 2,2 3,3으로 커널사이즈를 하니까 귀찮아서 2,2를 2만 써도 된다
+model.add(Conv2D(128 ,3))
 model.add(Flatten())
 model.add(Dense(32))
 model.add(Dropout(0.3))
@@ -43,14 +45,24 @@ model.add(Dense(16))
 model.add(Dense(10, activation = 'softmax'))
 model.summary()
 
-from tensorflow.python.keras.callbacks import EarlyStopping
+from tensorflow.python.keras.callbacks import EarlyStopping, ModelCheckpoint
 es = EarlyStopping(monitor = 'val_loss', mode = 'min', patience=5, verbose=1, restore_best_weights=True)
+
+filepath = './_save/MCP/cifar10/'
+filename = '{epoch:04d}-{val_loss:.4f}.hdf5'
+import datetime
+date = datetime.datetime.now()  #현재시간을 date에 넣어준다
+print(date)  
+date = date.strftime("%m%d_%H%M") #시간을 문자데이터로 바꾸겠다 그래야 파일명에 넣을 수 있다    %뒤에있는값을 반환해달라
+print(date)  
+
+mcp = ModelCheckpoint(monitor = 'val_loss', mode = 'min', verbose= 1, save_best_only=True, filepath="".join[filepath,'cifar10_',date,'_',filename])
 model.compile(loss = 'categorical_crossentropy', optimizer= 'adam', metrics = ['acc'])
 
 import time
 start_time = time.time()
 
-model.fit(x_train, y_train, epochs = 100, batch_size = 320, callbacks = [es], validation_split=0.2)
+model.fit(x_train, y_train, epochs = 1000, batch_size = 320, callbacks = [es,mcp], validation_split=0.2)
 end_time = time.time()
 
 #4 평가 예측
@@ -65,3 +77,4 @@ y_predict_acc = np.argmax(y_predict, axis=1)
 acc=accuracy_score(y_test_acc, y_predict_acc)
 print('acc:',acc)
 #acc: 0.623
+# 0.6329

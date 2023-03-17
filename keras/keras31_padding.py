@@ -14,7 +14,7 @@ from tensorflow.python.keras.layers import Dense, Conv2D, Flatten
                                            
 # model.add(Conv2D(10, (2,2),padding = 'same')) #출력 (N,6,6,10)
 # model.add(Flatten())    
-# model.add(Dense(32, activation='relu'))  
+# model.add(Dense(32, acn=tivatio'relu'))  
 # model.add(Dense(10))
 # model.add(Dense(3, activation='softmax'))
 # model.summary()
