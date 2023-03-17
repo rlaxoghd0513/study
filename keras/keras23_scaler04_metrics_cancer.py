@@ -26,7 +26,7 @@ x_train = scaler.transform(x_train)
 x_test = scaler.transform(x_test)
 print(np.min(x_test), np.max(x_test))
 
-#모델구성
+#모델구성 test
 model = Sequential()
 model.add(Dense(10, input_dim=30, activation='relu'))
 model.add(Dense(9, activation='linear'))
