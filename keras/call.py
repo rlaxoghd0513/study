@@ -1,4 +1,4 @@
-import numpy as np
+import numpy as np   #1
 from tensorflow.keras.models import Sequential, Model, load_model
 from tensorflow.keras.layers import Dense, Input, Dropout
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
