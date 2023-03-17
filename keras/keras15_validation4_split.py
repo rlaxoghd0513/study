@@ -24,7 +24,7 @@ model.add(Dense(5))
 model.add(Dense(3))
 model.add(Dense(1))
 
-#3. 컴파일 훈련
+#3. 컴파일 훈련2d
 model.compile(loss='mse', optimizer='adam')
 model.fit(x_train, y_train, epochs=1, batch_size=1,
           validation_split=0.2)#검증 몇퍼로 할건지

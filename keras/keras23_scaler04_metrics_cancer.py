@@ -16,7 +16,7 @@ y=datasets.target
 
 print(x.shape, y.shape)  #(569, 30) (569,)
 # print(y)
-# test
+
 
 x_train, x_test, y_train, y_test = train_test_split(x,y, random_state= 123, train_size=0.8, shuffle=True)
 
@@ -26,7 +26,7 @@ x_train = scaler.transform(x_train)
 x_test = scaler.transform(x_test)
 print(np.min(x_test), np.max(x_test))
 
-#모델구성 test
+#모델구성
 model = Sequential()
 model.add(Dense(10, input_dim=30, activation='relu'))
 model.add(Dense(9, activation='linear'))
