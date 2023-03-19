@@ -23,12 +23,12 @@ print(x) #[652 rows x 8 columns]
 
 y = train_csv['Outcome']
 
-x_train, x_test, y_train, y_test = train_test_split(x,y, random_state=330, shuffle=True, train_size=0.9)
+x_train, x_test, y_train, y_test = train_test_split(x,y, random_state=88484, shuffle=True, train_size=0.9)
 # print(x_train.shape, x_test.shape)
 # print(y_train.shape, y_test.shape)
 #(521, 8) (131, 8)
 #(521,) (131,)
-scaler= RobustScaler()
+scaler= RobustScaler()  #분류에 더 유용한 스케일러  standard 이상치에 매우 민감감 robust
 scaler.fit(x_train)
 x_train = scaler.transform(x_train)
 x_test = scaler.transform(x_test)
@@ -39,15 +39,14 @@ test_csv = scaler.transform(test_csv)  #train_csv도 스케일링 했으니까 �
 
 
 input1 = Input(shape = (8,))
-dense1 = Dense(10)(input1)
-drop1=Dropout(0.3)(dense1)
-dense2 = Dense(8)(drop1)
-dense3 = Dense(7)(dense2)
-dense4 = Dense(6)(dense3)
-drop4 = Dropout(0.3)(dense4)
-dense5 = Dense(5, activation = 'relu')(drop4)
-drop5 = Dropout(0.2)(dense5)
-dense6 = Dense(3, activation='relu')(drop5)
+dense1 = Dense(8)(input1)
+dense2 = Dense(16)(dense1)
+dense3 = Dense(32)(dense2)
+drop2 = Dropout(0.3)(dense3)
+dense4 = Dense(32)(drop2)
+drop3 = Dropout(0.3)(dense4)
+dense5 = Dense(16, activation='ELU')(drop3)
+dense6 = Dense(8, activation='relu')(dense5)
 output1 = Dense(1,activation= 'sigmoid' )(dense6)
 model = Model(inputs = input1, outputs = output1)
 
@@ -61,8 +60,8 @@ date = date.strftime("%m%d_%H%M")
 filepath = './_save/MCP/dacon_diabetes/'
 filename = '{epoch:04d}-{val_loss:.4f}.hdf5'
 
-es=EarlyStopping(monitor = 'val_loss', patience=60, mode='min', verbose=1,restore_best_weights=True)
-mcp = ModelCheckpoint(monitor = 'val_loss', mode= 'auto', save_best_only=True, verbose=1, filepath ="".join([filepath,'dia_',date,'_',filename]))
+es=EarlyStopping(monitor = 'accuracy', patience=150, mode='max', verbose=1,restore_best_weights=True)
+mcp = ModelCheckpoint(monitor = 'accuracy', mode= 'max', save_best_only=True, verbose=1, filepath ="".join([filepath,'dia_',date,'_',filename]))
 
 model.fit(x_train,y_train, epochs=10000, batch_size=1, validation_split=0.2, callbacks=[es,mcp])
 
@@ -70,6 +69,7 @@ model.fit(x_train,y_train, epochs=10000, batch_size=1, validation_split=0.2, cal
 #평가 에측
 results = model.evaluate(x_test, y_test)
 print('results:', results)
+
 y_predict = np.round(model.predict(x_test))
 
 acc=accuracy_score(y_test, y_predict)
