@@ -78,8 +78,12 @@ model.summary()
 #컴파일 훈련
 model.compile(loss = 'mse', optimizer = 'adam')
 es= EarlyStopping(monitor='val_loss', mode='min', patience=50, restore_best_weights=True)
+filepath = './_save/MCP/kaggle_house/'
 filename = '{epoch:04d}-{val_loss:.4f}.hdf5'
-mcp = ModelCheckpoint(monitor='val_loss', mode='min', save_best_only=True, verbose=1, filepath = './_save/MCP/kaggle_house/'+'0319_1745_'+filename)
+import datetime
+date= datetime.datetime.now()
+date = date.strftime("%m%d_%H%M%S")
+mcp = ModelCheckpoint(monitor='val_loss', mode='min', save_best_only=True, verbose=1, filepath ="".join([filepath,'house_',date,'_',filename]))
 model.fit(x_train, y_train, epochs = 1000, callbacks = [es,mcp], validation_split= 0.2, batch_size=16)
 
 #평가 예측
@@ -102,4 +106,4 @@ submission = pd.read_csv(path+'sample_submission.csv',index_col=0)
 submission['SalePrice'] = y_submit
 
 
-submission.to_csv(path_save+'submit_0319_1746.csv')
+submission.to_csv(path_save+'kaggle_house_'+date+'.csv')
