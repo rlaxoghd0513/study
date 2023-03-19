@@ -64,27 +64,27 @@ print(y_train.shape, y_test.shape)     #(1314,) (146,)
 
 #2 모델구성
 input1 = Input(shape = (78,))
-dense1 = Dense(16)(input1)
-dense2 = Dense(32)(dense1)
-drop1 = Dropout(0.4)(dense2)
-dense3 = Dense(16)(drop1)
-dense4 = Dense(32, activation='relu')(dense3)
-drop2 = Dropout(0.3)(dense4)
-dense5 = Dense(16,activation = 'relu')(drop2)
+dense1 = Dense(32)(input1)
+dense2 = Dense(64)(dense1)
+drop1 = Dropout(0.35)(dense2)
+dense3 = Dense(64)(drop1)
+dense4 = Dense(128, activation='relu')(dense3)
+drop2 = Dropout(0.4)(dense4)
+dense5 = Dense(32,activation = 'relu')(drop2)
 output1 = Dense(1)(dense5)
 model = Model(inputs = input1, outputs= output1)
 model.summary()
 
 #컴파일 훈련
 model.compile(loss = 'mse', optimizer = 'adam')
-es= EarlyStopping(monitor='val_loss', mode='min', patience=50, restore_best_weights=True)
+es= EarlyStopping(monitor='val_loss', mode='min', patience=100, restore_best_weights=True)
 filepath = './_save/MCP/kaggle_house/'
 filename = '{epoch:04d}-{val_loss:.4f}.hdf5'
 import datetime
 date= datetime.datetime.now()
 date = date.strftime("%m%d_%H%M%S")
 mcp = ModelCheckpoint(monitor='val_loss', mode='min', save_best_only=True, verbose=1, filepath ="".join([filepath,'house_',date,'_',filename]))
-model.fit(x_train, y_train, epochs = 1000, callbacks = [es,mcp], validation_split= 0.2, batch_size=16)
+model.fit(x_train, y_train, epochs = 10000, callbacks = [es,mcp], validation_split= 0.2, batch_size=1)
 
 #평가 예측
 results = model.evaluate(x_test,y_test)
