@@ -89,3 +89,9 @@ y_predict = np.argmax(y_predict, axis =-1)
 
 acc = accuracy_score(y_test_acc, y_predict)
 print('Accuary score : ', acc)
+
+#minmax
+#activation elu
+#opti adamax adam
+#batch 32
+#epoch 100
