@@ -1,6 +1,6 @@
 import numpy as np
 from tensorflow.python.keras.models import Sequential, Model
-from tensorflow.python.keras.layers import Dense, Input,Dropout
+from tensorflow.python.keras.layers import Dense, Input,Dropout, Conv2D, Flatten
 from sklearn.model_selection import train_test_split
 from tensorflow.python.keras.callbacks import EarlyStopping, ModelCheckpoint
 from sklearn.metrics import accuracy_score
@@ -37,18 +37,22 @@ print(np.unique(y_train))
 
 test_csv = scaler.transform(test_csv)  #train_csv도 스케일링 했으니까 제출할 test_csv 도 마찬가지로 스케일링 해줘야한다
 
+print(x_train.shape)  #(586, 8)
+print(x_test.shape)    #(66, 8)
+x_train = x_train.reshape(586,4,2,1)
+x_test = x_test.reshape(66,4,2,1)
 
-input1 = Input(shape = (8,))
-dense1 = Dense(8)(input1)
-dense2 = Dense(16)(dense1)
-dense3 = Dense(32)(dense2)
-drop2 = Dropout(0.3)(dense3)
-dense4 = Dense(32)(drop2)
-drop3 = Dropout(0.3)(dense4)
-dense5 = Dense(16, activation='ELU')(drop3)
-dense6 = Dense(8, activation='relu')(dense5)
-output1 = Dense(1,activation= 'sigmoid')(dense6)
-model = Model(inputs = input1, outputs = output1)
+input1 = Input(shape = (4,2,1))
+conv1 = Conv2D(16,2, padding='same')(input1)
+conv2 = Conv2D(32,3, padding='same')(conv1)
+conv3 = Conv2D(16,3,padding='same')(conv2)
+flat = Flatten()(conv3)
+dense1 = Dense(16)(flat)
+dense2 = Dense(32)(dense1)
+drop1 = Dropout(0.3)(dense2)
+dense3 = Dense(16, activation='relu')(drop1)
+output1 = Dense(1, activation='sigmoid')(dense3)
+model = Model(inputs =input1, outputs = output1)
 
 #컴파일 훈련
 model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
