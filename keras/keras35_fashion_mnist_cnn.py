@@ -2,11 +2,11 @@ from tensorflow.keras.datasets import mnist, fashion_mnist
 import numpy as np
 from tensorflow.python.keras.models import Sequential
 from tensorflow.python.keras.layers import Dense, Conv2D, Flatten, Dropout
-from sklearn.preprocessing import MinMaxScaler, RobustScaler
+from sklearn.preprocessing import MinMaxScaler, RobustScaler, StandardScaler
 from sklearn.metrics import accuracy_score
 
 #1 데이터
-(x_train, y_train), (x_test, y_test) = fashion_mnist.load_data()
+(x_train, y_train), (x_test, y_test) = fashion_mnist.load_data()  #이미지 모델이 cnn에 잘 어울린다
 print(x_train.shape, y_train.shape)   #(60000, 28, 28) (60000,)
 print(x_test.shape, y_test.shape)     # (10000, 28, 28) (10000,)
 
@@ -14,7 +14,7 @@ print(x_test.shape, y_test.shape)     # (10000, 28, 28) (10000,)
 x_train = x_train.reshape(60000,784)
 x_test = x_test.reshape(10000,784)
 
-scaler = RobustScaler()    #스케일러는 2차원 밖에 안되서 리쉐잎 해줘야한다
+scaler = StandardScaler()    #스케일러는 2차원 밖에 안되서 리쉐잎 해줘야한다
 scaler.fit(x_train)
 x_train = scaler.transform(x_train)
 x_test = scaler.transform(x_test)

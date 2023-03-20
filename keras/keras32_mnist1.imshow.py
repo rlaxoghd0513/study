@@ -12,5 +12,5 @@ print(x_train[0])
 print(y_train[3333])  #5
 
 import matplotlib.pyplot as plt
-plt.imshow(x_train[3333], 'gray')
+plt.imshow(x_train[8000], 'gray')
 plt.show()

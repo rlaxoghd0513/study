@@ -52,7 +52,7 @@ model.summary()
 from tensorflow.python.keras.callbacks import EarlyStopping
 es = EarlyStopping(monitor = 'acc', mode = 'max', patience=20, verbose=1, restore_best_weights=True)
 model.compile(loss = 'categorical_crossentropy', optimizer= 'adam', metrics = ['acc'])
-model.fit(x_train, y_train, epochs = 10000, batch_size = 30000, callbacks = [es])
+model.fit(x_train, y_train, epochs = 10000, batch_size = 128, callbacks = [es])
 
 #4 평가 예측
 results = model.evaluate(x_test, y_test)
@@ -65,6 +65,7 @@ y_predict_acc = np.argmax(y_predict, axis=1)
 acc=accuracy_score(y_test_acc, y_predict_acc)
 print('acc:',acc)
 
-
+#acc: 0.9814
 #맥스풀링
 #특징이 큰 애만 뽑아온다   연산이 필요없다 
+
