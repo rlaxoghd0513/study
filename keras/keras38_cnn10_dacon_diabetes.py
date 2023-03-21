@@ -78,3 +78,5 @@ y_predict = np.round(model.predict(x_test))
 
 acc=accuracy_score(y_test, y_predict)
 print('acc:',acc)
+
+
