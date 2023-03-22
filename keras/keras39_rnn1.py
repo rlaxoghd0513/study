@@ -1,6 +1,11 @@
 import numpy as np
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, SimpleRNN, Dropout
+#Rnn
+#시계열 데이터는 과거의 데이터들이 현재에 영향을 끼친다
+#첫번째에서 뽑아낸 y'가 두번째에 더해진다 근데 그럼 너무 큰값이 나오니까 activation 디폴트 tan해서 -1에서 1사이의 값으로 준다
+#지도학습  y의 값을 알때 
+#시계열데이터에는 y가 없다 내가 정한다
 
 #1 . 데이터
 datasets = np.array([1,2,3,4,5,6,7,8,10])
