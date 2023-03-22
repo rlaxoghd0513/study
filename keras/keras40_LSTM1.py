@@ -2,6 +2,12 @@ import numpy as np
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, SimpleRNN, Dropout, LSTM
 
+
+#LSTM 구조 3개의 게이트와 한개의 스테이트 
+# (forgettable gate input gate output gate)   (cell state)
+#구조 꼭 기억해야함
+#파라미터 연산값 simplernn 4배
+
 #1 . 데이터
 datasets = np.array([1,2,3,4,5,6,7,8,10])
 #y=?
