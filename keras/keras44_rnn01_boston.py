@@ -6,7 +6,7 @@
 from sklearn.datasets import load_boston
 from sklearn.model_selection import train_test_split
 from tensorflow.python.keras.models import Sequential, Model, load_model
-from tensorflow.python.keras.layers import Dense, Input, Dropout , Conv2D, Flatten
+from tensorflow.python.keras.layers import Dense, Input, Dropout , Conv2D, Flatten, LSTM
 from keras.layers import MaxPooling2D 
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler 
@@ -33,8 +33,10 @@ x_train = scaler.fit_transform(x_train)
 
 x_test = scaler.transform(x_test)
 
-x_train = x_train.reshape(404, 13,1,1)
-x_test = x_test.reshape(102,13,1,1)
+x_train = x_train.reshape(404, 13,1)
+x_test = x_test.reshape(102,13,1)
+print(x_train.shape)
+print(x_test.shape)
 
 # input1 = Input(shape=(13,))
 # dense1 = Dense(30)(input1) 
@@ -47,17 +49,15 @@ x_test = x_test.reshape(102,13,1,1)
 # model = Model(inputs = input1, outputs = output1)    
 
 model = Sequential()
-model.add(Conv2D(32,(2,1) ,input_shape=(13,1,1), padding = 'same'))
-model.add(Conv2D(16,(3,1), padding='same'))
-model.add(Conv2D(16, (2,1), padding= 'same'))
-model.add(Flatten())
+model.add(LSTM(32,input_shape=(13,1), return_sequences=True))
+model.add(LSTM(16, return_sequences=True))
+model.add(LSTM(16))
 model.add(Dense(32, activation='relu'))
 model.add(Dense(16))
 model.add(Dropout(0.2))
 model.add(Dense(10))
 model.add(Dropout(0.5))
 model.add(Dense(1))
-model.summary()
 
 
 #컴파일 훈련
