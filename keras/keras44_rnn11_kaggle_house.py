@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 from tensorflow.python.keras.models import Sequential, Model
-from tensorflow.python.keras.layers import MaxPool2D, Dense, Input, Dropout, Flatten, Conv2D,  GRU, SimpleRNN, LSTM
+from tensorflow.python.keras.layers import MaxPool2D, Dense, Input, Dropout, Flatten, Conv2D,  GRU, SimpleRNN, LSTM, Bidirectional
 from tensorflow.python.keras.callbacks import EarlyStopping, ModelCheckpoint
 from sklearn.preprocessing import MinMaxScaler, RobustScaler, MaxAbsScaler, StandardScaler
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder
@@ -74,43 +74,44 @@ test_csv = test_csv.reshape(1459,13,6)
 
 
 #2 모델구성
-input1 = Input(shape = (13,6))
-conv1 = LSTM(64, return_sequences=True)(input1)
-conv2 = GRU(64,return_sequences = True)(conv1)
-conv3 = SimpleRNN(128)(conv2)
-dense1 = Dense(128)(conv3)
-drop1 = Dropout(0.4)(dense1)
-dense2 = Dense(64)(drop1)
-dense3= Dense(32)(dense2)
-drop2 = Dropout(0.25)(dense3)
-dense4 = Dense(16, activation='ELU')(drop2)
-output1 = Dense(1, activation='ELU')(dense4)
-model = Model(inputs = input1, outputs=output1)
+# input1 = Input(shape = (13,6))
+# conv1 = LSTM(64, return_sequences=True)(input1)
+# conv2 = LSTM(64,return_sequences = True)(conv1)
+# conv3 = LSTM(128)(conv2)
+# dense1 = Dense(128)(conv3)
+# drop1 = Dropout(0.4)(dense1)
+# dense2 = Dense(64)(drop1)
+# dense3= Dense(32)(dense2)
+# drop2 = Dropout(0.25)(dense3)
+# dense4 = Dense(16, activation='ELU')(drop2)
+# output1 = Dense(1, activation='ELU')(dense4)
+# model = Model(inputs = input1, outputs=output1)
+
+model = Sequential()
+model.add(Bidirectional(LSTM(128, return_sequences=True), input_shape = (13,6)))
+model.add(Bidirectional(LSTM(64, return_sequences=True)))
+model.add(Bidirectional(LSTM(128)))
+model.add(Dense(256))
+model.add(Dense(128))
+model.add(Dropout(0.4))
+model.add(Dense(64))
+model.add(Dense(32, activation = 'ELU'))
+model.add(Dense(1, activation='ELU'))
 
 
 
 
-# dense1 = Dense(32)(input1)
-# dense2 = Dense(64)(dense1)
-# drop1 = Dropout(0.35)(dense2)
-# dense3 = Dense(64)(drop1)
-# dense4 = Dense(128, activation='relu')(dense3)
-# drop2 = Dropout(0.4)(dense4)
-# dense5 = Dense(32,activation = 'relu')(drop2)
-# output1 = Dense(1)(dense5)
-# model = Model(inputs = input1, outputs= output1)
-# model.summary()
 
 #컴파일 훈련
 model.compile(loss = 'mse', optimizer = 'adam')
-es= EarlyStopping(monitor='val_loss', mode='min', patience=70, restore_best_weights=True)
+es= EarlyStopping(monitor='val_loss', mode='min', patience=100, restore_best_weights=True)
 filepath = './_save/MCP/kaggle_house/'
 filename = '{epoch:04d}-{val_loss:.4f}.hdf5'
 import datetime
 date= datetime.datetime.now()
 date = date.strftime("%m%d_%H%M%S")
 mcp = ModelCheckpoint(monitor='val_loss', mode='min', save_best_only=True, verbose=1, filepath ="".join([filepath,'house_',date,'_',filename]))
-model.fit(x_train, y_train, epochs = 1000, callbacks = [es,mcp], validation_split= 0.2, batch_size=64)
+model.fit(x_train, y_train, epochs = 10000, callbacks = [es,mcp], validation_split= 0.2, batch_size=32)
 
 #평가 예측
 results = model.evaluate(x_test,y_test)
@@ -125,13 +126,16 @@ print("RMSE :", rmse)
 
 
 
-# y_submit = model.predict(test_csv) #submit 제출
-# print(y_submit)
+y_submit = model.predict(test_csv) #submit 제출
+print(y_submit)
 
-# submission = pd.read_csv(path+'sample_submission.csv',index_col=0)
+submission = pd.read_csv(path+'sample_submission.csv',index_col=0)
                     
 
-# submission['SalePrice'] = y_submit
+submission['SalePrice'] = y_submit
 
 
-# submission.to_csv(path_save+'kaggle_house_'+date+'.csv')
+submission.to_csv(path_save+'kaggle_house_'+date+'.csv')
+
+#results: 837226880.0
+# RMSE : 28934.873384576436
