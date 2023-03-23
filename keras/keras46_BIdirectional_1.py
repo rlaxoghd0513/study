@@ -25,6 +25,10 @@ print(x.shape)  #(7, 3, 1)
 
 #2 모델구성
 model = Sequential()
-model.add(Bidirectional(SimpleRNN(10), input_shape = (3,1))) #rnn을 bidirectional로 래핑한다 감싼다
+model.add(Bidirectional(SimpleRNN(10), input_shape = (3,1))) #rnn을 bidirectional로 래핑한다 감싼
+model.add(Bidirectional(LSTM(10, return_sequences=True), input_shape = (3,1)))
+model.add(LSTM(10, return_sequences=True))
+model.add(Bidirectional(LSTM(10, return_sequences=True)))
+model.add(Bidirectional(GRU(10)))
 model.add(Dense(1))
 model.summary()

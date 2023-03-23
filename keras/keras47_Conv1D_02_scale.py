@@ -1,6 +1,6 @@
 import numpy as np
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, SimpleRNN, Dropout, LSTM, GRU, Bidirectional
+from tensorflow.keras.layers import Dense, SimpleRNN, Dropout, LSTM, GRU, Conv1D, Flatten
 from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping
 
 #1 데이터
@@ -22,26 +22,24 @@ print(x.shape) #(13, 3, 1)
 x_predict = x_predict.reshape(1,3,1)
 #모델구성
 model = Sequential()
-model.add(Bidirectional(GRU(16,return_sequences=True) ,input_shape = (3,1)))
-model.add(LSTM(8, return_sequences=True))
-model.add(Bidirectional(SimpleRNN(16, return_sequences=True)))
-model.add(Bidirectional(LSTM(8, return_sequences=True)))
-model.add(GRU(8))
-model.add(Dense(16))
-model.add(Dense(8))
-model.add(Dense(4))
-model.add(Dense(2, activation='relu'))
+model.add(Conv1D(32,2, input_shape = (3,1), padding = 'same')) #stride기억
+model.add(Conv1D(18,3))
+model.add(Flatten())
+model.add(Dense(128))
+model.add(Dense(64))
+model.add(Dense(32))
+model.add(Dense(16, activation='relu'))
 model.add(Dense(1))
 
 #컴파일 훈련
 model.compile(loss='mse', optimizer = 'adam')
 mcp = ModelCheckpoint(monitor = 'loss', mode='min', save_best_only=True, filepath ='./_save/MCP/lstm_scale/lstm_scale_mcp1.hdf5')
-es = EarlyStopping(monitor = 'loss', mode = 'min', patience = 100, restore_best_weights=True)
-model.fit(x,y,epochs = 100100, callbacks = [es, mcp], verbose=1, batch_size=1)
+es = EarlyStopping(monitor = 'loss', mode = 'min', patience = 30, restore_best_weights=True)
+model.fit(x,y,epochs = 100100, callbacks = [mcp,es], verbose=1)
 
 #평가 예측
 loss = model.evaluate(x,y)
 results = model.predict(x_predict)
 print('loss:', loss)
 print('[50,60,70]결과:', results)
-
+#[50,60,70]결과: [[80.000015]]
