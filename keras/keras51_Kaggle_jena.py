@@ -96,7 +96,7 @@ model.add(Dense(1, activation ='ELU'))
 
 #컴파일
 model.compile(loss = 'mse', optimizer= 'adam')
-es = EarlyStopping(monitor = 'val_loss', mode = 'min', patience =50, restore_best_weights=True)
+es = EarlyStopping(monitor = 'val_loss', mode = 'min', patience =30, restore_best_weights=True)
 mcp = ModelCheckpoint(monitor = 'val_loss', mode = 'min', save_best_only=True, filepath ="".join([filepath,'jena_',date,'_',filename]))
 model.fit(x_train, y_train, epochs = 10000, batch_size = 32, validation_split = 0.2, callbacks = [es,mcp])
 

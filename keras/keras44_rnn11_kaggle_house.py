@@ -111,7 +111,7 @@ import datetime
 date= datetime.datetime.now()
 date = date.strftime("%m%d_%H%M%S")
 mcp = ModelCheckpoint(monitor='val_loss', mode='min', save_best_only=True, verbose=1, filepath ="".join([filepath,'house_',date,'_',filename]))
-model.fit(x_train, y_train, epochs = 100.00, callbacks = [es,mcp], validation_split= 0.2, batch_size=32)
+model.fit(x_train, y_train, epochs = 10000, callbacks = [es,mcp], validation_split= 0.2, batch_size=16)
 
 #평가 예측
 results = model.evaluate(x_test,y_test)
