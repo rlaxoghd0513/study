@@ -23,29 +23,35 @@ import pandas as pd
 path = './_data/시험/'
 path_save = './_save/시험/'
 
-datasets1 = pd.read_csv(path + '삼성전자 주가2.csv', index_col = 0)
-datasets2 = pd.read_csv(path + '현대자동차.csv', index_col =0)
+datasets1 = pd.read_csv(path + '삼성전자 주가2.csv', index_col = 0, header=0)
+datasets2 = pd.read_csv(path + '현대자동차.csv', index_col =0, header=0)
 
 datasets1 = datasets1.drop(['전일비'], axis=1)
 datasets2 = datasets2.drop(['전일비'], axis=1)
+datasets1 = datasets1.drop(['Unnamed: 6'], axis=1)
+datasets2 = datasets2.drop(['Unnamed: 6'],axis=1)
+
+print(type(datasets1)) #<class 'pandas.core.frame.DataFrame'>
+print(type(datasets2)) #<class 'pandas.core.frame.DataFrame'>
+print(datasets1.info())
+print(datasets2.info())
+##########################################따움표제거######################################################
+(datasets1['종가']).apply(lambda x: int(x))
+
+    
+print(datasets1.info())
+    
 
 
-
+#########################################################################################################
 datasets1 = datasets1.sort_values('일자', ascending=True)
 datasets2 = datasets2.sort_values('일자', ascending=True)
 
 datasets1 = datasets1.iloc[120:]
 
-for i in range(len(datasets1.index)):
-     datasets1.iloc[i,3] = int(datasets1.iloc[i,3].replace(',',""))
+##########################################################################################################
 
 
-
-print(datasets1.shape) #(3140, 15)
-print(datasets2.shape) #(3140, 15)
-
-# print(datasets1.isnull().sum()) #거래량 금액에 3개씩
-# print(datasets2.isnull().sum())
 
 x1 = datasets1.drop(['종가'],axis=1)
 y = datasets1['종가']
@@ -53,26 +59,15 @@ x2 = datasets2
 
 
 
-###################################
-from sklearn.preprocessing import LabelEncoder
-string_cols = x1.select_dtypes(include=['object']).columns  # 문자열인 칼럼을 찾는다
-numeric_cols = x1.select_dtypes(exclude=['object'])  #문자열인 칼럼 제외한 나머지 선택
-le = LabelEncoder()
-string_cols_le = x1[string_cols].apply(lambda x: le.fit_transform(x))
 
-x1  = pd.concat([numeric_cols, string_cols_le], axis=1)
 
-print(x1.shape) #(3140, 14)
-##################################
-string_cols = x2.select_dtypes(include=['object']).columns  # 문자열인 칼럼을 찾는다
-numeric_cols = x2.select_dtypes(exclude=['object'])  #문자열인 칼럼 제외한 나머지 선택
-le = LabelEncoder()
-string_cols_le = x2[string_cols].apply(lambda x: le.fit_transform(x))
 
-x2  = pd.concat([numeric_cols, string_cols_le], axis=1)
-
-print(x2.shape) #(3140, 15)
-
+print(type(x1))
+print(type(x2))
+print(type(y))
+print(x1.info())
+print(x2.info())
+print(y.info())
 ###########################################################
 
 ##########################################################
@@ -95,6 +90,8 @@ print(x2.shape) #(3130, 10, 15)
 y = y[timesteps:]
 print(y.shape) #(3130,)
 ##############################
+
+
 
 from sklearn.model_selection import train_test_split
 x1_train, x1_test, x2_train, x2_test, y_train, y_test = train_test_split(x1,x2,y, random_state = 333, train_size = 0.8)
