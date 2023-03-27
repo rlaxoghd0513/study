@@ -1,4 +1,9 @@
+#다대일
+
+
 #1 데이터
+
+
 import numpy as np
 x1_datasets = np.array([range(100), range(301,401)])  #예를 들어 삼성, 아모레 주가 데이터 
 x2_datasets = np.array([range(101,201), range(411,511), range(150,250)]) #온도, 습도, 강수량

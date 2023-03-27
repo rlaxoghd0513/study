@@ -1,3 +1,5 @@
+#다대일
+
 #1 데이터
 import numpy as np
 x1_datasets = np.array([range(100), range(301,401)])  #예를 들어 삼성, 아모레 주가 데이터 
