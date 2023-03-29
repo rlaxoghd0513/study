@@ -72,14 +72,14 @@ y = y[timesteps+1:]
 
 
 from sklearn.model_selection import train_test_split
-x1_train, x1_test, x2_train, x2_test, y_train, y_test = train_test_split(x1,x2,y, random_state = 158796, train_size = 0.8)
-print(x1_train.shape, x1_test.shape) #(956, 10, 9) (240, 10, 9)
-print(x2_train.shape, x2_test.shape) #(956, 10, 9) (240, 10, 9)
+x1_train, x1_test, x2_train, x2_test, y_train, y_test = train_test_split(x1,x2,y, random_state = 15876, train_size = 0.9)
+print(x1_train.shape, x1_test.shape) #(1076, 10, 9) (120, 10, 9)
+print(x2_train.shape, x2_test.shape) #
 
-x1_train = x1_train.reshape(956,90)
-x1_test = x1_test.reshape(240,90)
-x2_train = x2_train.reshape(956,90)
-x2_test = x2_test.reshape(240,90)
+x1_train = x1_train.reshape(1076,90)
+x1_test = x1_test.reshape(120,90)
+x2_train = x2_train.reshape(1076,90)
+x2_test = x2_test.reshape(120,90)
 
 from sklearn.preprocessing import MinMaxScaler, RobustScaler
 scaler = MinMaxScaler()
@@ -90,10 +90,10 @@ x2_train = scaler.transform(x2_train)
 x2_test = scaler.transform(x2_test)
 
 
-x1_train = x1_train.reshape(956,10,9)
-x1_test = x1_test.reshape(240,10,9)
-x2_train = x2_train.reshape(956,10,9)
-x2_test = x2_test.reshape(240,10,9)
+x1_train = x1_train.reshape(1076,10,9)
+x1_test = x1_test.reshape(120,10,9)
+x2_train = x2_train.reshape(1076,10,9)
+x2_test = x2_test.reshape(120,10,9)
 
 
 
@@ -102,28 +102,25 @@ from tensorflow.keras.models import Model
 from tensorflow.keras.layers import LSTM, Input, Bidirectional, Flatten, Dropout, Dense
 #모델1
 input1 = Input(shape = (10,9))
-lstm1  = Bidirectional(LSTM(32, return_sequences=True))(input1)
-lstm2 = Bidirectional(LSTM(64, return_sequences=True))(lstm1)
-lstm3 = LSTM(128)(lstm2)
-dense1 = Dense(64)(lstm3)
-dense2 = Dense(32)(dense1)
-dense3 = Dense(64)(dense2)
-output1 = Dense(32)(dense3)
+lstm1  = Bidirectional(LSTM(64, return_sequences=True))(input1)
+lstm2 = Bidirectional(LSTM(128, return_sequences=True))(lstm1)
+lstm3 = LSTM(64)(lstm2)
+dense1 = Dense(128)(lstm3)
+dense2 = Dense(256)(dense1)
+output1 = Dense(64)(dense2)
 #모델2
 input2 = Input(shape = (10,9))
 lstm11 = LSTM(64, return_sequences=True)(input2)
-lstm12 = Bidirectional(LSTM(128, return_sequences=True))(lstm11)
-lstm13 = Bidirectional(LSTM(64))(lstm12)
-dense11 = Dense(32)(lstm13)
-dense14 = Dense(64)(dense11)
+lstm12 = Bidirectional(LSTM(128))(lstm11)
+dense11 = Dense(128)(lstm12)
+dense14 = Dense(256)(dense11)
 output2 = Dense(64)(dense14)
 #머지
 from tensorflow.keras.layers import concatenate
 merge1 = concatenate([output1, output2])
-merge2 = Dense(32)(merge1)
-merge3 = Dense(64)(merge2)
-merge4 = Dense(64, activation='ELU')(merge3)
-merge5 = Dense(32,activation='ELU')(merge4)
+merge2 = Dense(64)(merge1)
+merge3 = Dense(128)(merge2)
+merge5 = Dense(32,activation='ELU')(merge3)
 last_output = Dense(1)(merge5)
 
 model = Model(inputs = [input1,input2], outputs = last_output)
@@ -139,9 +136,9 @@ import datetime
 date = datetime.datetime.now() 
 date = date.strftime("%m%d_%H%M")
 
-es = EarlyStopping(monitor = 'val_loss', mode = 'min', patience = 30, restore_best_weights=True)
+es = EarlyStopping(monitor = 'val_loss', mode = 'min', patience = 50, restore_best_weights=True)
 mcp = ModelCheckpoint(monitor = 'val_loss', mode = 'min',verbose=1, save_best_only=True, filepath ="".join([filepath,'시험_',date,'_',filename]))
-model.fit([x1_train, x2_train],y_train, epochs=1000, batch_size=8, validation_split=0.2, callbacks=[es,mcp])
+model.fit([x1_train, x2_train],y_train, epochs=100, batch_size=64, validation_split=0.2, callbacks=[es,mcp])
 
 #평가 예측
 loss = model.evaluate([x1_test, x2_test], y_test)
