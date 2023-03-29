@@ -39,7 +39,7 @@ y = datasets1['종가']
 timesteps = 10
 def split_x(dataset, timesteps):
     aaa = []
-    for i in range(len(dataset) - timesteps): 
+    for i in range(len(dataset) - timesteps-1): 
         subset = dataset[i : (i+timesteps)] 
         aaa.append(subset)      
     return np.array(aaa)
@@ -48,7 +48,7 @@ x1 = split_x(x1, timesteps)
 
 x2 = split_x(x2, timesteps)
 
-y = y[timesteps:]
+y = y[timesteps+1:]
 
 
 from sklearn.model_selection import train_test_split
@@ -80,7 +80,7 @@ x2_test = x2_test.reshape(120,10,9)
 from tensorflow.keras.models import Model, load_model
 from tensorflow.keras.layers import LSTM, Input, Bidirectional, Flatten, Dropout, Dense
 
-model = load_model('_save/samsung/keras53_samsung2_kth.hdf5')
+model = load_model('_save\MCP\시험\시험_0329_1054_0133-13898277.00.hdf5')
 
 loss = model.evaluate([x1_test, x2_test], y_test)
 print('loss:',loss)
