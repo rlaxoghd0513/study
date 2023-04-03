@@ -14,7 +14,7 @@ train_datagen = ImageDataGenerator(rescale = 1./255,
                                    height_shift_range=0.1,
                                    fill_mode = 'nearest')
 
-train_datagen = ImageDataGenerator(rescale=1./1,
+train_datagen2 = ImageDataGenerator(rescale=1./1,
                                    )
 
 print(x_train.shape, x_test.shape) #(50000, 32, 32, 3)(10000, 32, 32, 3)
