@@ -24,6 +24,9 @@ mw_x_train, mw_x_test, mw_y_train, mw_y_test = train_test_split(mw_x, mw_y, trai
 print(mw_x_train.shape, mw_x_test.shape)#(70, 200, 200, 3) (30, 200, 200, 3)
 print(mw_y_train.shape, mw_y_test.shape)#(70,) (30,)
 
+print(type(mw_x_train))
+print(type(mw_y_train))
+
 np.save(path_save + 'keras56_mw_x_train.npy', arr = mw_x_train)
 np.save(path_save + 'keras56_mw_x_test.npy', arr = mw_x_test)
 np.save(path_save + 'keras56_mw_y_train.npy', arr = mw_y_train)

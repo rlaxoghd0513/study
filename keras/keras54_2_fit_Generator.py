@@ -75,7 +75,7 @@ model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['acc'])
 ###전체 데이터 쓸려면 160넣기(통배치)= 데이터를 통으로 쓰고싶다하면 batch_size를 전체 데이터 개수(160)이상으로 잡으면 됨### 
 (160,100,100,1)(160,) =>[0][0],[0][1]하면 x,y모두 가져오는 것임 (통배치일 경우[1][0],[1][0]은 없으므로..)
 '''
-hist = model.fit_generator(xy_train, epochs=100,  # (fit_generator) x데이터,y데이터,batch_size까지 된 것
+hist = model.fit_generator(xy_train, epochs=100,  # (fit_generator)  xy_train 은  x데이터,y데이터,batch_size까지 된 것
                     steps_per_epoch=32,   # 훈련(train)데이터/batch = 160/5=32 (32가 한계사이즈임(max), 이만큼 잡아주는게 좋음/이상 쓰면 과적합, 더 적은 숫자일 경우 훈련 덜 돌게 됨)
                     validation_data=xy_test,
                     validation_steps=24,  # val(test)데이터/batch = 120/5=24

@@ -20,7 +20,7 @@ model.add(Dense(1, activation='sigmoid'))
 
 # 3. 컴파일, 훈련
 model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['acc'])
-hist = model.fit(cat_dog_x_train, cat_dog_y_train, epochs=100, validation_data=(cat_dog_x_test, cat_dog_y_test))
+hist = model.fit(cat_dog_x_train, cat_dog_y_train, epochs=1, validation_data=(cat_dog_x_test, cat_dog_y_test))
 
 loss = hist.history['loss']
 val_loss = hist.history['val_loss']
