@@ -32,7 +32,7 @@ model.add(Dense(1, activation = 'sigmoid'))
 from tensorflow.python.keras.callbacks import EarlyStopping
 es = EarlyStopping(monitor = 'val_loss', mode = 'min', patience=30, verbose=1, restore_best_weights=True)
 model.compile(loss = 'binary_crossentropy', optimizer= 'adam', metrics = ['acc'])
-model.fit(x_train, y_train, epochs = 1, batch_size = 32)
+model.fit(x_train, y_train, epochs = 100, batch_size = 32)
 
 #4 평가 예측
 loss = model.evaluate(x_test, y_test)
