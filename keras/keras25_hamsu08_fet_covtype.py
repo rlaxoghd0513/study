@@ -17,10 +17,10 @@ print('y의 라벨값:',np.unique(y)) #[1 2 3 4 5 6 7]
 print(y)
 
 #keras 카테고리컬
-y = to_categorical(y)
-print(y.shape)       #(581012, 8)  #카테고리컬로 하면 0부터 시작해서 0라벨이 생겨서 8개가 된다
-y = np.delete(y,0,axis=1)   #y의 열에서 0번째 행을 뺀다
-print(y)   #(581012, 7)
+# y = to_categorical(y)
+# print(y.shape)       #(581012, 8)  #카테고리컬로 하면 0부터 시작해서 0라벨이 생겨서 8개가 된다
+# y = np.delete(y,0,axis=1)   #y의 열에서 0번째 행을 뺀다
+# print(y)   #(581012, 7)
 
 #2. sklearn
 # from sklearn.preprocessing import OneHotEncoder
