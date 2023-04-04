@@ -1,139 +1,128 @@
-#57_5카피해서 복붙함
-
+#57_5 copy -> 57_8 : iterator형태로 바꾸기(x,y합치기)/fit_generator로 사용
 
 from tensorflow.keras.datasets import fashion_mnist
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 import numpy as np
-import pandas as pd
+from tensorflow.keras.utils import to_categorical
+
+#seed고정
+np.random.seed(42)
 
 (x_train, y_train), (x_test, y_test) = fashion_mnist.load_data()
 
-train_datagen = ImageDataGenerator(rescale=1./255,
-                                   horizontal_flip = True, #좌우
-                                #    vertical_flip= True,   #위아래
-                                   width_shift_range=0.1,
-                                   height_shift_range = 0.1,
-                                   rotation_range = 5,
-                                   zoom_range = 0.1,
-                                   shear_range = 0.7,
-                                   fill_mode='nearest')
+#증폭
+train_datagen = ImageDataGenerator(
+    rescale=1./255,
+    # horizontal_flip=True,
+    vertical_flip=True,
+    width_shift_range=0.1,
+    height_shift_range=0.1,
+    rotation_range=5,
+    zoom_range=0.1,
+    shear_range=0.7,
+    fill_mode='nearest'
+)
+train_datagen2 = ImageDataGenerator(
+    rescale=1./1, #밑에서 scale해주므로, 여기서도 하면 flow이후 scale이 두번 적용되어 /255,/255됨, 값너무 작아짐
+    )
 
-train_datagen2 = ImageDataGenerator(rescale=1./1,)
-                               
+print(x_train.shape)    #(60000, 28, 28)
+print(x_train[0].shape) #(28, 28)
+print(x_train[1].shape) #(28, 28)
+print(x_train[0][0].shape) #(28,)
 
-#증폭(증강) 
-augment_size = 40000 #6만개인 패션엠니스트를 10만개로 증폭할거다 그래서 augment_size 4만
+#6만개를 4만개 데이터로 증폭(총 10만개)
+augment_size = 40000 #증폭사이즈  
 
-#하나의 데이터를 4만개 증폭시ㅋ면 의미없어서 6만개중 4만개 뽑기
-# randidx = np.random.randint(60000, size = 40000)
-np.random.seed(42) 
-randidx = np.random.randint(x_train.shape[0], size = augment_size)  #(60000,28,28) 의 0번째는 60000  이러면 x_train사이즈가 바뀌어도 굳이 다시 명시안해도 된다 
-print(randidx) #[32963 17416 41890 ... 13860  4541 50320]
-print(randidx.shape) #(40000,)
-print(np.min(randidx), np.max(randidx)) #0 59996 /0 59997 / 계속 달라지니까 np시드 고정 2 59998  2 59998 이제 값이 계속 같다
+# randidx = np.random.randint(60000, size = 40000) #랜덤하게 6만개에서 4만개 뽑을 것
+randidx = np.random.randint(x_train.shape[0], size=augment_size) 
+print(randidx)       #[46080  1860 15952 ...  8776 34167 38743]
+print(randidx.shape) #(40000,) 스칼라 4만개 벡터1개 
 
-# x_augmented = x_train[randidx] #4만개 (40000,28,28)
-# y_augmented = y_train[randidx] #4만개 (40000,)
+print(np.min(randidx), np.max(randidx)) #2 59998/ 0 59999 *(랜덤)
 
-x_augmented = x_train[randidx].copy()  # 카피 안붙이면 그냥 똑같은 데이터가 두개가 중복된다 그리고 증폭시킬 데이터를 변환시키면 원데이터도 변환된다 copy()를 붙여주면 원데이터 안변함
-y_augmented = y_train[randidx].copy()  #
+###변환해서 넣은것이 아니라 4만개가 중복이므로 .copy()를 통해 중복 방지 (중복=과적합)###
+x_augmented = x_train[randidx].copy()      #x_train에 4만개 데이터 넣은것 = x_augmented
+y_augmented =y_train[randidx].copy()
 print(x_augmented)
-print(x_augmented.shape, y_augmented.shape)#(40000, 28, 28) (40000,)
+print(x_augmented.shape, y_augmented.shape) #(40000,28,28) (40000,)
 
-#4차원으로 변환
+#증폭 (이미지데이터-4차원으로 reshape)
 x_train = x_train.reshape(60000,28,28,1)
-x_test = x_test.reshape(x_test.shape[0],#갯수를 모를땐 이렇게 써도 된다
-                        x_test.shape[1],
-                        x_test.shape[2],
-                        1) 
-
-x_augmented = x_augmented.reshape(x_augmented.shape[0],
-                                  x_augmented.shape[1],
-                                  x_augmented.shape[2],
-                                  1)
-                        
-#그냥 복사만 해온 데이터니까 변환시켜야한다
-
-# x_augmented = train_datagen.flow(
-#     x_augmented,y_augmented,
-#     batch_size = augment_size,
-#     shuffle = False,
-# )
-# #통과하면  x와 y가 합쳐져있는 iterator형태가 된다
-
-# print(x_augmented) #<keras.preprocessing.image.NumpyArrayIterator object at 0x0000027358503FA0>
-
-# print(x_augmented[0][0].shape) #(40000, 28, 28, 1)
+x_test = x_test.reshape(x_test.shape[0], x_test.shape[1], x_test.shape[2], 1) #데이터 양 모를때 명시가능
+# x_test = x_test.reshape(10000,28,28,1)과 동일 
+x_augmented = x_augmented.reshape(x_augmented.shape[0], x_augmented.shape[1], x_augmented.shape[2], 1)
 
 
-# x_augmented = train_datagen.flow(
-#     x_augmented,y_augmented,
-#     batch_size = augment_size,
-#     shuffle = False,
-# ).next()   #이러면 이터레이터 안의 첫번째 튜플이 나온다 x_augmented[0]이 나옴
-
-x_augmented = train_datagen.flow(#튜플의 이터레이터 형태로 만드는거 flow
-    x_augmented,y_augmented,
-    batch_size = augment_size,
-    shuffle = False,
-).next()[0]
-
-print(x_augmented)
-print(x_augmented.shape) #(40000, 28, 28, 1)
-
-
-print(np.max(x_train), np.min(x_train)) #255 0
-print(np.max(x_augmented), np.min(x_augmented)) #1.0 0.0
-
-x_train =np.concatenate((x_train/255.,x_augmented))
-y_train = np.concatenate((y_train, y_augmented))
-x_test = x_test/255.
-print(x_train.shape, y_train.shape) #(100000, 28, 28, 1) (100000,)
-
-#########################################fit generator 쓸라고 x,y 합치기##################################################
-batch_size = 64
-xy_train = train_datagen2.flow(x_train, y_train, batch_size=batch_size, shuffle=True) #또 스케일링 하면 안댐
+'''
+#x_augmented 변환 방법1. 
+x_augmented = train_datagen.flow(
+    x_augmented, y_augmented, batch_size=augment_size, shuffle=False
+) #y넣을 필요는 없지만 x,y쌍으로 되어있으므로 넣음
+#x와 y가 합쳐진 iterator형태 됨 -> x_train과 합체 안됨 
+print(x_augmented) #<keras.preprocessing.image.NumpyArrayIterator object at 0x0000014508EA3B20>
+print(x_augmented[0][0].shape) #(40000, 28, 28,1) #x_train과 합체
+'''
+#x_augmented 변환 방법2. '.next()사용'
+x_augmented = train_datagen.flow(
+    x_augmented, y_augmented, batch_size=augment_size, shuffle=False
+    ).next()[0]  #.next()하면 첫번째 튜플이 나옴(x_augmented[0]이 나옴) =>.next()[0]하면 x_augmented[0][0]까지 나옴
+# print(x_augmented)
+# print(x_augmented.shape) #(40000, 28, 28, 1)
 
 
-
-print(np.max(x_train), np.min(x_train)) #1.0 0.0
-print(np.max(x_augmented), np.min(x_augmented)) #1.0 0.0
-
-from tensorflow.keras.utils import to_categorical
+#x_train, x_augmented합치기 (10만데이터)/ y_train, y_augmented합치기 
+x_train = np.concatenate((x_train/255. ,x_augmented)) #x_train, x_augmented를 뒤에 엮겠다.
+y_train = np.concatenate((y_train,y_augmented), axis=0)  #y는 scale하면 안됨!!!
 y_train = to_categorical(y_train)
 y_test = to_categorical(y_test)
-print(y_train.shape)#(100000, 10)
-print(y_test.shape)#(10000, 10)
+x_test = x_test/255.
+# print(x_train.shape, y_train.shape) #(100000, 28, 28, 1), (100000)
+# print(np.max(x_train), np.min(x_train))         
+# print(np.max(x_augmented), np.min(x_augmented)) 
 
-#모델구성
+################[x, y합치기]########################
+#numpy, tuple, iterator형태로 만들어주는 것 : flow 
+batch_size=64
+xy_train = train_datagen2.flow(x_train, y_train, batch_size=batch_size, shuffle=True)
+
+
+#[실습] 모델, 증폭/증폭x비교 
+#2. 모델구성 
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Conv2D, Dense, MaxPool2D, Dropout,Flatten
-from sklearn.metrics import accuracy_score
+from tensorflow.keras.layers import Dense, Conv2D, Flatten, MaxPooling2D
 
 model = Sequential()
-model.add(Conv2D(64, (3,3), input_shape=(28,28,1)))
-model.add(Conv2D(64, (3,3)))
+model.add(Conv2D(64, (2,2), input_shape=(28,28,1), activation='relu'))
+model.add(MaxPooling2D())
+model.add(Conv2D(64, (2,2), activation='relu'))
 model.add(Flatten())
-model.add(Dense(32))
-model.add(Dense(10, activation = 'softmax'))
+model.add(Dense(16, activation='relu'))
+model.add(Dense(16, activation='relu'))
+model.add(Dense(16, activation='relu'))
+model.add(Dense(16, activation='relu'))
+model.add(Dense(10, activation='softmax')) 
 
 
-#3 컴파일 훈련
-from tensorflow.python.keras.callbacks import EarlyStopping
-es = EarlyStopping(monitor = 'val_loss', mode = 'min', patience=30, verbose=1, restore_best_weights=True)
-model.compile(loss = 'categorical_crossentropy', optimizer= 'adam', metrics = ['acc'])
+#3. 컴파일, 훈련 
+model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['acc'])
 
-model.fit_generator(xy_train, epochs = 10, 
-                    steps_per_epoch= len(xy_train)/batch_size
-                    )
+#3)fit
+hist = model.fit_generator(xy_train, epochs=10,  # (fit_generator) x데이터,y데이터,batch_size까지 된 것
+                    steps_per_epoch=len(xy_train)/batch_size,   
+                    validation_data=[x_test, y_test],
+                    # batch_size = 16,
+                    validation_steps=24,  
+                    )  
 
-#4 평가 예측
-results = model.evaluate(x_test, y_test)
-print('results:', results)
+#history=(metrics)loss, val_loss, acc
+loss = hist.history['loss']
+val_loss = hist.history['val_loss']
+acc = hist.history['acc']
+val_acc = hist.history['val_acc']
 
-y_predict = model.predict(x_test)
-y_test_acc = np.argmax(y_test, axis=1)
-y_predict_acc = np.argmax(y_predict, axis=1)
-
-acc=accuracy_score(y_test_acc, y_predict_acc)
-print('acc:',acc)
+# print(acc) 
+print("acc:",acc[-1])
+print("val_acc:",val_acc[-1])
+print("loss:",loss[-1])
+print("val_loss:",val_loss[-1])

@@ -95,7 +95,7 @@ plt.figure(figsize = (10,10))
 for i in range(10):
     plt.subplot(2,10,i+1)
     plt.axis('off')
-    plt.imshow(x_train[i]/255., cmap = 'gray')       
+    plt.imshow(x_train[i], cmap = 'gray')       
     plt.subplot(2,10,i+11)
     plt.axis('off')
     plt.imshow(x_augmented[i], cmap = 'gray')
