@@ -47,4 +47,3 @@ np.save(path_save +'keras58_7_rsp_x_test.npy', arr = x_test)
 np.save(path_save +'keras58_7_rsp_y_train.npy', arr = y_train)
 np.save(path_save +'keras58_7_rsp_y_test.npy', arr = y_test)
  
-from image import rembg

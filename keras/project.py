@@ -1,7 +1,6 @@
 train_path = 'd:/study_data/_data/project/project/Training/'
 predict_path = 'd:/study_data/_data/project/project/Validation/'
 save_path = 'd:/study_data/_save/project/'
-from tensorflow.keras.applications.resnet_v2 import ResNet50V2
 
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
@@ -22,21 +21,24 @@ train_datagen = ImageDataGenerator(
     fill_mode='nearest')
 
 Train_data = datagen.flow_from_directory(train_path,
-                                  target_size = (100,100),
-                                  batch_size = 7000, 
+                                  target_size = (150,150),
+                                  batch_size = 130000, 
                                   class_mode = 'categorical',
                                   color_mode = 'rgb',
                                   shuffle=True)
 
 Predict_data = datagen.flow_from_directory(predict_path,
-                                              target_size=(100,100),
-                                              batch_size = 70,
+                                              target_size=(150,150),
+                                              batch_size = 5000,
                                               class_mode = 'categorical',
                                               color_mode = 'rgb',
                                               shuffle=True)
 
 x = Train_data[0][0]
 y = Train_data[0][1]
+
+import numpy as np
+
 
 x_predict = Predict_data[0][0]
 y_predict = Predict_data[0][1]
