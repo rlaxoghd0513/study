@@ -15,13 +15,28 @@ from sklearn.metrics import accuracy_score
 
 model = Sequential()
 model.add(Conv2D(32, (3,3), input_shape = (100,100,3)))
-model.add(Conv2D(16,2))
+model.add(Conv2D(64, 3, padding='same'))
+model.add(Conv2D(32,2, padding = 'same'))
 model.add(Flatten())
+model.add(Dense(32))
+model.add(Dense(64))
+model.add(Dense(128))
 model.add(Dense(32))
 model.add(Dense(7, activation = 'softmax'))
 
 model.compile(loss = 'categorical_crossentropy', optimizer = 'adam', metrics = ['acc'])
-model.fit(x_train, y_train, epochs = 1)
+
+from tensorflow.keras.callbacks import EarlyStopping
+es = EarlyStopping(monitor = 'val_loss', mode = 'min', patience=30, restore_best_weights = True)
+
+model.fit(x_train, y_train, epochs = 100, validation_split = 0.2, callbacks = [es])
 
 loss = model.evaluate(x_test, y_test)
 print(loss)
+
+y_predict_model = model.predict(x_predict)
+y_predict = np.argmax(y_predict, axis=1)
+y_predict_model = np.argmax(y_predict_model, axis=1)
+
+acc = accuracy_score(y_predict, y_predict_model)
+print(acc)

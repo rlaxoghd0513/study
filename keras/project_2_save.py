@@ -4,9 +4,6 @@ save_path = 'd:/study_data/_save/project/'
 
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
-from PIL import Image, ImageFile
-
-ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 datagen = ImageDataGenerator(rescale=1./255)
 
@@ -21,15 +18,15 @@ train_datagen = ImageDataGenerator(
     fill_mode='nearest')
 
 Train_data = datagen.flow_from_directory(train_path,
-                                  target_size = (150,150),
-                                  batch_size = 130000, 
+                                  target_size = (100,100),
+                                  batch_size = 35000, 
                                   class_mode = 'categorical',
                                   color_mode = 'rgb',
                                   shuffle=True)
 
 Predict_data = datagen.flow_from_directory(predict_path,
-                                              target_size=(150,150),
-                                              batch_size = 5000,
+                                              target_size=(100,100),
+                                              batch_size = 7000,
                                               class_mode = 'categorical',
                                               color_mode = 'rgb',
                                               shuffle=True)
@@ -66,9 +63,9 @@ print(np.min(x_train), np.max(x_train))
 print(np.min(x_test), np.max(x_test))
 print(np.min(x_predict), np.max(x_predict))
 
-print(x_train.shape, y_train.shape) #(4900, 100, 100, 3) (4900, 7)
-print(x_test.shape, y_test.shape) #(2100, 100, 100, 3) (2100, 7)
-print(x_predict.shape,y_predict.shape) #(70, 100, 100, 3) (70, 7)
+print(x_train.shape, y_train.shape) #(24500, 100, 100, 3) (24500, 7)
+print(x_test.shape, y_test.shape) #(10500, 100, 100, 3) (10500, 7)
+print(x_predict.shape,y_predict.shape) #(7000, 100, 100, 3) (7000, 7)
 
 
 np.save(save_path + 'project_x_train.npy', arr = x_train)
