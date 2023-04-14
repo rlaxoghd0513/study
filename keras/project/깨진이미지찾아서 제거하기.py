@@ -16,3 +16,6 @@ for(path, dirs, f) in os.walk(checkdir):
             except Exception as e:
                 print('An exception is raised:', e)
                 print(file)
+                
+                os.remove(os.path.join(path, file))
+                print(f'{file} has been deleted.')

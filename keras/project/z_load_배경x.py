@@ -12,19 +12,17 @@ x_predict = np.load(path_save_predict + 'project_x_predict.npy')
 y_predict = np.load(path_save_predict + 'project_y_predict.npy')
 
 from tensorflow.python.keras.models import Sequential
-from tensorflow.python.keras.layers import Conv2D, Dense, Flatten, Dropout, MaxPooling2D
+from tensorflow.python.keras.layers import Conv2D, Dense, Flatten, Dropout, MaxPooling2D, BatchNormalization
 from sklearn.metrics import accuracy_score
 
 model = Sequential()
-model.add(Conv2D(200, (2,2), input_shape = (150,150,3),padding= 'same', activation = 'relu'))
-model.add(Conv2D(180, 2, activation = 'relu', padding='same'))
-model.add(MaxPooling2D())
-model.add(Conv2D(100, 2, activation = 'relu', padding = 'same'))
-model.add(Conv2D(50, 2, activation = 'relu', padding='same'))
+model.add(Conv2D(100, (2,2), input_shape = (100,100,3), activation = 'relu'))
+model.add(BatchNormalization())
+model.add(Conv2D(100, 2, activation = 'relu'))
+model.add(Conv2D(100, 2, activation = 'relu'))
 model.add(Flatten())
-model.add(Dense(180, activation = 'relu'))
-model.add(Dropout(0.2))
-model.add(Dense(128, activation = 'relu'))
+model.add(Dense(64, activation = 'relu'))
+model.add(Dense(64, activation = 'relu'))
 model.add(Dropout(0.3))
 model.add(Dense(64, activation='relu'))
 model.add(Dense(7, activation = 'softmax'))
@@ -33,8 +31,8 @@ model.summary()
 model.compile(loss = 'categorical_crossentropy', optimizer = 'adam', metrics = ['acc'])
 
 from tensorflow.keras.callbacks import EarlyStopping
-es = EarlyStopping(monitor = 'val_acc', mode = 'max', patience=50, restore_best_weights = True)
-model.fit(x_train, y_train, epochs = 10000, batch_size = 16, validation_split = 0.1, callbacks = [es])
+es = EarlyStopping(monitor = 'val_acc', mode = 'max', patience=40, restore_best_weights = True)
+model.fit(x_train, y_train, epochs = 100, batch_size = 1, validation_split= 0.1, callbacks = [es])
 
 results = model.evaluate(x_test, y_test)
 print('acc:', results[1])
@@ -44,7 +42,7 @@ y_predict_model = model.predict(x_predict)
 y_predict = np.argmax(y_predict, axis=1)
 y_predict_model = np.argmax(y_predict_model, axis=1)
 
-print(y_predict, y_predict_model)
+print(y_predict,y_predict_model)
 
-acc = accuracy_score(y_predict, y_predict_model)
-
+predict_acc = accuracy_score(y_predict, y_predict_model)
+print('모델분류 정확도`:',predict_acc)

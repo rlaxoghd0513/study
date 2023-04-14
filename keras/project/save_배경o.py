@@ -20,12 +20,12 @@ Train_data = datagen.flow_from_directory(Train_path,
                                   target_size = (150,150),
                                   batch_size = 7000, 
                                   class_mode = 'categorical',
-                                  color_mode = 'rgb',
-                                  shuffle=True)
+                                  color_mode = 'rgb', 
+                                  shuffle = True)   #class_weights 각 라벨별로 이미지 개수를 균등하게 불러준다
 
 Test_data = datagen.flow_from_directory(Test_path,
                                               target_size=(150,150),
-                                              batch_size = 1000,
+                                              batch_size = 5000,
                                               class_mode = 'categorical',
                                               color_mode = 'rgb',
                                               shuffle=True)
@@ -36,7 +36,7 @@ y_train = Train_data[0][1]
 x_test = Test_data[0][0]
 y_test = Test_data[0][1]
 
-augment_size = 3000
+augment_size = 5000
 np.random.seed(42)
 randidx = np.random.randint(x_train.shape[0], size = augment_size)
 
@@ -57,7 +57,7 @@ print(np.min(x_test), np.max(x_test))
 print(x_train.shape, y_train.shape) 
 print(x_test.shape, y_test.shape)
 
-np.save(save_path_train + 'project_x_train.npy', arr = x_train)
-np.save(save_path_test + 'project_x_test.npy', arr = x_test)
-np.save(save_path_train + 'project_y_train.npy', arr = y_train)
-np.save(save_path_test + 'project_y_test.npy', arr = y_test)
+np.save(save_path_train + 'x_train_o.npy', arr = x_train)
+np.save(save_path_test + 'x_test.npy', arr = x_test)
+np.save(save_path_train + 'y_train_o.npy', arr = y_train)
+np.save(save_path_test + 'y_test.npy', arr = y_test)

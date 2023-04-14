@@ -1,4 +1,4 @@
-Train_path = 'd:/study_data/_data/project/Training/'
+Train_path = 'd:/study_data/_data/project/project/Training_x/'
 save_path_train = 'd:/study_data/_save/project/배경x/'
 
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
@@ -25,7 +25,7 @@ Train_data = datagen.flow_from_directory(Train_path,
 x_train = Train_data[0][0]
 y_train = Train_data[0][1]
 
-augment_size = 3000
+augment_size = 5000
 np.random.seed(42)
 randidx = np.random.randint(x_train.shape[0], size = augment_size)
 
@@ -44,8 +44,8 @@ print(np.min(x_train), np.max(x_train))
 
 print(x_train.shape, y_train.shape) 
 
-np.save(save_path_train + 'project_x_train.npy', arr = x_train)
-np.save(save_path_train + 'project_y_train.npy', arr = y_train)
+np.save(save_path_train + 'x_train_x.npy', arr = x_train)
+np.save(save_path_train + 'y_train_x.npy', arr = y_train)
 
 
 
