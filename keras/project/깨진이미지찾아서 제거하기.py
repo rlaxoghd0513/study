@@ -19,3 +19,5 @@ for(path, dirs, f) in os.walk(checkdir):
                 
                 os.remove(os.path.join(path, file))
                 print(f'{file} has been deleted.')
+                
+                
