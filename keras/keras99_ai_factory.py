@@ -31,7 +31,7 @@ x_test = scaler.transform(test_data)
 
 
 # Define LOF model
-lof = LocalOutlierFactor(n_neighbors=35, contamination=0.17)
+lof = LocalOutlierFactor(n_neighbors=32, contamination=0.15)
 
 # Fit LOF model to training data
 lof.fit(x_train)
