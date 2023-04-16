@@ -32,7 +32,7 @@ x_train = pad_sequences(x_train, padding = 'pre', maxlen = 100,
 
 print(x_train.shape) #(8982, 100)
 
-x_test = pad_sequences(x_test, padding='pre', maxlen = 100,
+x_test = pad_sequences(x_test, padding='pre', maxlen = 100,    
                        truncating='pre')
 
 print(x_test.shape) #(2246, 100)
