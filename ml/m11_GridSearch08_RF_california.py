@@ -35,3 +35,6 @@ import pandas as pd
 print('최적의 파라미터:', model.best_params_)
 print('최적튠:', r2_score(y_test, y_pred_best))
 print('걸린시간:', round(end_time-start_time,2),'초')
+# 최적의 파라미터: {'min_samples_split': 5, 'n_estimators': 200}
+# 최적튠: 0.8029503768679296
+# 걸린시간: 225.1 초

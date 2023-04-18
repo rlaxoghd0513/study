@@ -35,3 +35,6 @@ import pandas as pd
 print('최적의 파라미터:', model.best_params_)
 print('최적튠:', accuracy_score(y_test, y_pred_best))
 print('걸린시간:', round(end_time-start_time,2),'초')
+# 최적의 파라미터: {'max_depth': 12, 'min_samples_leaf': 3, 'n_estimators': 100}
+# 최적튠: 0.7749857145807659
+# 걸린시간: 1851.22 초
