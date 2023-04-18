@@ -73,6 +73,7 @@ lof_predictions = [1 if x == -1 else 0 for x in y_pred_test_lof]
 
 submission['label'] = pd.DataFrame({'Prediction': lof_predictions})
 print(submission.value_counts())
+
 #time
 date = datetime.datetime.now()
 date = date.strftime("%m%d_%H%M")
