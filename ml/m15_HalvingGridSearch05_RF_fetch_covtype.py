@@ -55,3 +55,11 @@ y_pred_best = model.best_estimator_.predict(x_test)
 print("최적 튠:",accuracy_score(y_test,y_pred_best)) 
 
 print("걸린시간:", round(end_time-start_time,2), '초')
+
+# 최적의 매개변수: RandomForestClassifier(max_depth=12, n_estimators=200)
+# 최적의 파라미터: {'max_depth': 12, 'n_estimators': 200}
+# best_score: 0.7778990963855422
+# model.score: 0.7824927067287419
+# acc: 0.7824927067287419
+# 최적 튠: 0.7824927067287419
+# 걸린시간: 428.78 초
