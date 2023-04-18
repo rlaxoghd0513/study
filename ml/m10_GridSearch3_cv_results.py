@@ -5,7 +5,8 @@ from sklearn.model_selection import KFold, cross_val_score, StratifiedKFold
 from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import accuracy_score
 from sklearn.svm import SVC
- #GridSearch 파라미터의 경우의 수만큼 가둔다
+
+#GridSearch 파라미터의 경우의 수만큼 가둔다
 
 x,y = load_iris(return_X_y=True)
 x_train, x_test, y_train, y_test = train_test_split(x,y, shuffle=True, random_state = 333, test_size = 0.2)
@@ -15,7 +16,7 @@ kfold = KFold(n_splits = n_splits, shuffle= True, random_state=333)
 
 
 parameters = [                                                     #리스트 안에 딕셔너리 형태
-    {"C":[1,10,100,1000], "kernel":['linear'],'degree':[3,4,5]},   #12번 돈다    약간씩 자기가 하고 싶은 대로 수정 가능한것  degree디폴트3
+    {"C":[1,10,100,1000], "kernel":['linear'],'degree':[3,4,5]},   #12번 돈다    약간씩 자기가 하고 싶은 대로 수정 가능한것
     {"C":[1,10,100],'kernel':['rbf','linear'],'gamma':[0.001,0.0001]},      #12번 돈다
     {"C":[1,10,100,1000], 'kernel':['sigmoid'],                    #24번 돈다
      'gamma':[0.01,0.001,0.0001], 'degree':[3,4]},
@@ -55,16 +56,15 @@ print("최적 튠:",accuracy_score(y_test,y_pred_best))  #model.predict를 쓰�
 # 최적 튠: 0.9666666666666667
 print("걸린시간:", round(end_time-start_time,2), '초')
 # 걸린시간: 2.4 초
+##################################################################################################
+import pandas as pd      #아무거나 판다스 갖다붙이면 안되고 데이터 모양 보고 해라
+print(pd.DataFrame(model.cv_results_))    #가로 세로 있는거 판다스 데이터 프레임    # 1차원 형태 하나의 행 한가지 한가지 리스트는 벡터 형태 판다스 리스트
+#[52 rows x 17 columns] 52번 돌렸고 그안에 17가지의 칼럼들이 뽑힌다
+print(pd.DataFrame(model.cv_results_).sort_values('rank_test_score'))#값 순서대로 정렬 sort_index는 인덱스 순으로 정렬 (오름차순) 디폴트값
+print(pd.DataFrame(model.cv_results_).sort_values('rank_test_score', ascending=False))   #(내림차순)
+print(pd.DataFrame(model.cv_results_).columns) #칼럼이 뭐가 있는지 궁금하다 
 
-# gamma: RBF (Radial basis function) 커널에서 사용되는 하이퍼파라미터로, 커널 함수의 영향 범위를 조절합니다.
-# gamma 값이 작을수록 커널 함수의 영향 범위가 크며, 클수록 작아집니다.
+path = './temp/'
+pd.DataFrame(model.cv_results_).sort_values('rank_test_score', ascending=True)\
+    .to_csv(path+'m10_GridSearch3.csv')
 
-# degree: 다항 커널(Polynomial kernel)에서 사용되는 하이퍼파라미터로, 다항 커널의 차수를 지정합니다.
-# 일반적으로 1 이상의 정수 값을 사용하며, 높은 차수일수록 더 복잡한 결정 경계를 생성합니다. 기본값은 3입니다.
-
-# C: 소프트 마진(Soft margin) SVM에서 사용되는 하이퍼파라미터로, 각 데이터 포인트의 분류를 얼마나 엄격하게 할 것인지를 조절합니다. 
-# C 값이 작을수록 분류가 더 허용되며, 클수록 분류가 더 엄격해집니다.
-
-# kernel: SVM에서 사용할 커널 함수를 선택하는 하이퍼파라미터로, 데이터를 고차원 공간으로 매핑하여 비선형 결정 경계를 생성합니다. 
-# 주요 커널 함수로는 선형 커널(Linear kernel), 다항 커널(Polynomial kernel), RBF 커널(Radial basis function kernel) 등이 있습니다.
-        

@@ -4,6 +4,10 @@ from sklearn.model_selection import train_test_split, KFold, cross_val_score
 from sklearn.metrics import accuracy_score
 from sklearn.svm import SVC
 
+# 그리드 서치(Grid search)
+# 그리드 서치(Grid search)를 통해, 하이퍼파라미터 목록과 성능 지표를 지정하면 알고리즘이 가능한 모든 조합을 통해 작동하여 가장 적합한 것을 결정합니다. 
+# 그리드 서치(Grid search)는 훌륭하게 작동하지만 상대적으로 지루하고 계산 집약적입니다. 많은 수의 하이퍼파라미터가 있는 경우 특히 그러합니다.
+
 # 1. 데이터
 x, y = load_iris(return_X_y=True)
 
