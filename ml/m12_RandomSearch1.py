@@ -30,6 +30,7 @@ model = RandomizedSearchCV(SVC(), parameters,            #cross_val 당 52 중 1
                      verbose=1,
                      refit=True,     #디폴트 True
                     #  refit=False,    # refit은 최적의 값을 계속 저장하고 있다 false 로 하면 260번을 돌긴 하지만 마지막값을 저장하기 때문에 최적의 값을 저장하지 않는다 
+                     n_iter=5,     #디폴트는 10 디폴트일 경우 10번*cv만큼 훈련.  랜덤하게 5개만 뽑겠다
                      n_jobs=-1) #gridsearch1에서 for문으로 길게 돌린게 한줄로 정리된다  kfold했기때문에 5번 더 돌아서 240번 돈다
 
 #컴파일 훈련
