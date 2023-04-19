@@ -31,6 +31,7 @@ model.fit(x_train, y_train)
 end_time = time.time()
 
 y_pred_best = model.best_estimator_.predict(x_test)
+
 import pandas as pd
 print('최적의 파라미터:', model.best_params_)
 print('최적튠:', r2_score(y_test, y_pred_best))

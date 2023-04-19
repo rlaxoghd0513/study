@@ -32,7 +32,7 @@ parameters = [
 #그리드서치에서 랜덤하게 몇개만 빼서 쓰는게 랜더마이즈서치
 # model = GridSearchCV(SVC(), parameters,
 model = HalvingGridSearchCV(RandomForestRegressor(), parameters,            #cross_val 당 52 중 10개만 랜덤하게 뽑겠다 데이터가 크다 싶으면 randomized 데이터가 작아서 금방 끝나겠다 싶으면 gridsearch
-                    #  cv=kfold,     #cv=5도 가능   kfold에 stratify가 안들어가있는데 5로 하니까 더 좋아졌다 디폴트로 stratify가 들어가 있단 얘기
+                    #  cv=kfold,     #cv=5도 가능   kfold에 stratify가 안들어가는데있 5로 하니까 더 좋아졌다 디폴트로 stratify가 들어가 있단 얘기
                      cv=5,            #분류의 디폴트는 StratifiedKFold이다 
                      verbose=1,
                      refit=True,     #디폴트 True
