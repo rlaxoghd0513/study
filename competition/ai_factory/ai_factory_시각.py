@@ -40,17 +40,19 @@ gmm.fit(X_train)
 # Compute log-likelihood for each sample in train set
 log_likelihood_train = gmm.score_samples(X_train)
 
-# Tuning: Adjust the threshold for anomaly detection
-threshold = -12.05
+import matplotlib.pyplot as plt
+import numpy as np
 
-# Predict anomalies in test data using trained GMM
-test_data_gmm = scaler.transform(test_data[features])
-log_likelihood_test = gmm.score_samples(test_data_gmm)
-gmm_predictions = [1 if x < threshold else 0 for x in log_likelihood_test]
+# Compute log-likelihood for each sample in validation set
+log_likelihood_val = gmm.score_samples(X_val)
 
-submission['label'] = pd.DataFrame({'Prediction': gmm_predictions})
-print(submission.value_counts())
+# Visualize distribution of log-likelihoods for validation set
+plt.hist(log_likelihood_val, bins=50, density=True, alpha=0.5, color='blue')
 
-# Save submission file
-date = datetime.datetime.now().strftime("%m%d_%H%M")
-submission.to_csv(save_path + date + 'submission.csv', index=False)
+# Compute threshold based on percentile of log-likelihoods
+threshold = np.percentile(log_likelihood_val, 5)
+print("Threshold:", threshold)
+
+# Plot threshold
+plt.axvline(x=threshold, color='red')
+plt.show()

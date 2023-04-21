@@ -27,14 +27,14 @@ features = ['air_inflow', 'air_end_temp', 'out_pressure', 'motor_current', 'moto
 X = train_data[features]
 
 # Split data into train and validation sets
-X_train, X_val = train_test_split(X, train_size= 0.9, random_state= 5555)
+X_train, X_val = train_test_split(X, train_size= 0.9, random_state= 1234)
 
 n_splits = 5
-kfold = KFold(n_splits = n_splits, random_state = 333, shuffle=True)
+kfold = KFold(n_splits = n_splits, random_state = 1234, shuffle=True)
 
 parameters = [
-    {'n_components':[1,2,3], 'covariance_type':['spherical','diag','tied','full'],
-     'max_iter':[100,500,1000],'n_init':[1,2,3]}
+    {'n_components':[1,2,3,4], 'covariance_type':['spherical','diag','tied','full'],
+     'max_iter':[100,200,300,400,500,1000],'n_init':[1,2,3]}
 ]
 
 # Normalize data
@@ -50,7 +50,7 @@ gmm.fit(X_train)
 log_likelihood_train = gmm.score_samples(X_train)
 
 # Compute threshold value based on log-likelihood scores of training set
-threshold = np.median(log_likelihood_train)
+threshold = -9.5
 
 # Predict anomalies in test data using trained GMM
 test_data_gmm = scaler.transform(test_data[features])
