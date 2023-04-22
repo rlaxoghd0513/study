@@ -3,8 +3,11 @@ from sklearn.preprocessing import PolynomialFeatures
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, RobustScaler, MaxAbsScaler, MinMaxScaler
 from sklearn.neural_network import MLPRegressor
+from xgboost import XGBRegressor
 from sklearn.metrics import mean_squared_error
 import numpy as np
+import datetime
+
 
 path = './_data/dacon_basic/'
 save_path = './_save/dacon_basic/'
@@ -33,10 +36,10 @@ scaler = RobustScaler()
 X_scaled = scaler.fit_transform(X)
 
 # train, valid 데이터 나누기
-X_train, X_valid, y_train, y_valid = train_test_split(X_scaled, y, test_size=0.3, random_state=42)
+X_train, X_valid, y_train, y_valid = train_test_split(X_scaled, y, test_size=0.2, random_state=42)
 
 # 회귀 신경망 모델 학습
-mlp = MLPRegressor(hidden_layer_sizes=(1024, 512,2), max_iter=500, activation='relu', solver='adam', random_state=42)
+mlp = MLPRegressor(hidden_layer_sizes=(1024,512,2), max_iter=500, activation='relu', solver='lbfgs', random_state=42)
 mlp.fit(X_train, y_train)
 
 # valid 데이터 예측 및 평가
@@ -52,4 +55,5 @@ y_pred_test = mlp.predict(X_test_scaled)
 
 # 결과 저장
 sample_submission_df['Calories_Burned'] = y_pred_test
-sample_submission_df.to_csv(save_path + 'submission_0421_1600.csv', index=False)
+date = datetime.datetime.now().strftime("%m%d_%H%M")
+sample_submission_df.to_csv(save_path +date+ 'submission.csv', index=False) 
