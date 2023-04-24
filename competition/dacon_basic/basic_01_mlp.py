@@ -36,10 +36,13 @@ scaler = RobustScaler()
 X_scaled = scaler.fit_transform(X)
 
 # train, valid 데이터 나누기
-X_train, X_valid, y_train, y_valid = train_test_split(X_scaled, y, test_size=0.2, random_state=42)
+X_train, X_valid, y_train, y_valid = train_test_split(X_scaled, y, test_size=0.1, random_state=2450)
 
 # 회귀 신경망 모델 학습
-mlp = MLPRegressor(hidden_layer_sizes=(1024,512,2), max_iter=500, activation='relu', solver='lbfgs', random_state=42)
+mlp = MLPRegressor(hidden_layer_sizes=(1024,512,2), max_iter=500, activation='relu',
+                   solver='lbfgs', random_state=7777, learning_rate='invscaling',
+                   alpha=0.001)
+
 mlp.fit(X_train, y_train)
 
 # valid 데이터 예측 및 평가
