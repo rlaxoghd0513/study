@@ -15,16 +15,16 @@ from xgboost import XGBClassifier
 n_components_list = [154,331,486,713]
 list_name = ['0.95','0.99','0.999','1.0']
 parameters = parameters = [
-    {"_estimators": [100, 200, 300],
+    {"n_estimators": [100, 200, 300],
      "learning_rate": [0.1, 0.3, 0.001, 0.01],
     "max_depth": [4, 5, 6]},
 
-    {"_estimators": [90, 100, 110],
+    {"n_estimators": [90, 100, 110],
     "learning_rate": [0.1, 0.001, 0.01],
     "max _depth": [4,5,6],
     "colsample_bytree": [0.6, 0.9, 1]},
 
-    {"_estimators": [90, 110],
+    {"n_estimators": [90, 110],
     "learning rate": [0.1, 0.001, 0.5],
     "max _depth": [4,5,6],
     "colsample _bytree": [0.6, 0.9, 1]},
@@ -47,10 +47,17 @@ for i,value in enumerate(n_components_list):
     
     x_train, x_test, y_train, y_test = train_test_split(x,y, train_size = 0.8, random_state=123, shuffle=True)
 
-    model = GridSearchCV(XGBClassifier(), parameters, cv=5,verbose=1,
-                         n_jobs=-1,tree_method ='gpu_hist',predictor ='gpu_predictor',gpu_id =0)
+    model = GridSearchCV(XGBClassifier(tree_method ='gpu_hist',predictor ='gpu_predictor',gpu_id =0), 
+                         parameters, cv=5,verbose=1,n_jobs=-1)
     model.fit(x_train, y_train)
     result = model.score(x_test, y_test)
     
     
     print('pca',list_name[i],':', result)
+    
+# pca 0.95 : 0.9365714285714286
+# pca 0.99 : 0.9305
+# pca 0.999 : 0.9300714285714285
+# pca 1.0 : 0.9252857142857143
+    
+    
