@@ -1,3 +1,7 @@
+####################엄청중요한거####################
+# 결측치가 없는 데이터는 없다
+# imputer무조건 사용한다
+
 import numpy as np
 import pandas as pd
 import sklearn as sk
