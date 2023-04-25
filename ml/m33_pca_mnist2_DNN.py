@@ -11,17 +11,11 @@ from tensorflow.keras.utils import to_categorical
 
 (x_train, y_train), (x_test, y_test) = mnist.load_data()   #y가져오기 싫다 파이썬 기초문법 _작대기
 
-# x = np.append(x_train, x_test, axis=0)
-# print(x.shape) 
-# y = np.append(y_train, y_test, axis=0)
-
-# x = x.reshape(70000,784)
-# y = to_categorical(y)
 n_components_list = [154,331,486,713]
 list_name = ['0.95','0.99','0.999','1.0']
 
 for i,value in enumerate(n_components_list):
-    (x_train, y_train), (x_test, y_test) = mnist.load_data()   #y가져오기 싫다 파이썬 기초문법 _작대기
+    (x_train, y_train), (x_test, y_test) = mnist.load_data() 
 
     x = np.append(x_train, x_test, axis=0)
     print(x.shape) 
@@ -44,9 +38,8 @@ for i,value in enumerate(n_components_list):
     acc = model.evaluate(x_test, y_test)[1]
     print('pca',list_name[i],':', acc)
 
-
-# 최고DNN :  0.822324256616622
-# 최고CNN :  0.7814124357346221
+# 최고DNN :  0.9223
+# 최고CNN :  0.9814
 # pca 0.95 : 0.8677856922149658
 # pca 0.99 : 0.8637857437133789
 # pca 0.999 : 0.8684285879135132

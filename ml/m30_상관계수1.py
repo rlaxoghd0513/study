@@ -26,5 +26,5 @@ import seaborn as sns
 sns.set(font_scale=1.2)
 sns.heatmap(data=df.corr(), square=True, annot=True, cbar=True)
 plt.show()
-#상관관계가 높은 x변수 삭제 고려해본다
+#상관관계가 너무 높은 x변수 삭제 고려해본다
 #상관관계가 높은 y변수는 좋다

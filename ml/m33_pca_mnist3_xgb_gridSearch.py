@@ -49,6 +49,8 @@ for i,value in enumerate(n_components_list):
 
     model = GridSearchCV(XGBClassifier(tree_method ='gpu_hist',predictor ='gpu_predictor',gpu_id =0), 
                          parameters, cv=5,verbose=1,n_jobs=-1)
+    #xgbclassifier 에서 n_estimators : epochs 디폴트 100 
+    #에러 뜰수도 있으니까 n_estimators 1이나 2로 해서 미리 돌려본다
     model.fit(x_train, y_train)
     result = model.score(x_test, y_test)
     

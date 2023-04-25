@@ -2,6 +2,7 @@
 #pca 했을때 성능이 좋아질수도 있다
 #y는 차원축소할 필요가 없다 target값(통상y) 이기 때문에 차원축소 할수도 없다
 #지도학습과 비지도학습 두가지 개념이 공존한다
+#스케일링의 개념으로도 볼 수 있다
 #선위에다 맵핑한다 또 할때는 직각 또할때는 또 직각
 
 import numpy as np
@@ -18,12 +19,13 @@ datasets = load_iris()
 
 x = datasets['data']
 y = datasets.target
-print(x.shape, y.shape) 
+print(x.shape, y.shape) #(150, 4) (150,) # x칼럼 갯수 : 4
+print(np.unique(y)) #[0 1 2] 클래스 갯수 : 3
 
-# pca = PCA(n_components = 2)
-# #n_components 차원(칼럼) 몇개로 줄일건지
-# x = pca.fit_transform(x)
-# print(x.shape)  
+pca = PCA(n_components = 4)
+#n_components 차원(칼럼) 몇개로 줄일건지
+x = pca.fit_transform(x)
+print(x.shape)  #(150, 4)
 
 x_train, x_test, y_train, y_test = train_test_split(x,y, train_size = 0.8, random_state=123, shuffle=True)
 

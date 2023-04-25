@@ -1,3 +1,5 @@
+#트리계열만. 훈련을 돌린 후 feature_importances 보기
+
 import numpy as np
 from sklearn.datasets import load_iris
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
