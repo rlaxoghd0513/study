@@ -79,7 +79,8 @@ test_x = test.drop(columns=['ID'])
 # 교육 데이터는 교육 및 검증 세트로 분할되고 수치 기능은 StandardScaler를 사용하여 정규화됩니다.
 # 모델은 GridSearchCV와 5겹 교차 검증을 사용하여 수행되는 하이퍼파라미터 튜닝과 함께 XGBClassifier를 사용하여 훈련됩니다.
 # Split the training dataset into a training set and a validation set
-train_x, val_x, train_y, val_y = train_test_split(train_x, train_y, test_size=0.2, random_state=980513, stratify=train_y)
+
+train_x, val_x, train_y, val_y = train_test_split(train_x, train_y, test_size=0.1, random_state=7788, stratify=train_y)
 
 # Normalize numerical features
 scaler = MinMaxScaler()
