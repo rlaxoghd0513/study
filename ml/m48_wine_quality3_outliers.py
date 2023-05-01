@@ -69,7 +69,7 @@ x_train, x_test, y_train, y_test = train_test_split(x, y, random_state=123, shuf
 from sklearn.ensemble import RandomForestClassifier
 model = RandomForestClassifier()
 
-#3. 훈련
+#3. 훈련 
 model.fit(x_train,  y_train)
 
 #4. 평가,예측

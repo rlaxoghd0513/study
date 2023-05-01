@@ -100,4 +100,4 @@ print('acc :', acc)
 ##########################################
 import pickle
 path = './_save/pickle_test/'
-pickle.dump(model, open(path + 'm43_pickle1_save.dat', 'wb')) # wb = 라이트 바이너리
+pickle.dump(model, open(path + 'm43_pickle1_save.dat', 'wb')) # wb = write binary

@@ -78,7 +78,7 @@ model.fit(x_train, y_train, eval_set=[(x_train,y_train),(x_test,y_test)],
     
 
 # print(model.feature_importances)
-thresholds = np.sort(model.feature_importances_)
+thresholds = np.sort(model.feature_importances_)                    
 
 print(thresholds)
 # [0.03175544 0.06501069 0.07197672 0.07753727 0.08700569 0.10525618

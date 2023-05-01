@@ -79,7 +79,7 @@ test_x = test.drop(columns=['ID'])
 # 교육 데이터는 교육 및 검증 세트로 분할되고 수치 기능은 StandardScaler를 사용하여 정규화됩니다.
 # 모델은 GridSearchCV와 5겹 교차 검증을 사용하여 수행되는 하이퍼파라미터 튜닝과 함께 XGBClassifier를 사용하여 훈련됩니다.
 # Split the training dataset into a training set and a validation set
-train_x, val_x, train_y, val_y = train_test_split(train_x, train_y, test_size=0.2, random_state=337, stratify=train_y)
+train_x, val_x, train_y, val_y = train_test_split(train_x, train_y, test_size=0.2, random_state=980513, stratify=train_y)
 
 # Normalize numerical features
 scaler = MinMaxScaler()
@@ -91,10 +91,10 @@ smote = SMOTE(random_state=12)
 train_x, train_y = smote.fit_resample(train_x, train_y)
 
 # Cross-validation with StratifiedKFold
-cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=337)
+cv = StratifiedKFold(n_splits=4, shuffle=True, random_state=8739)
 
 # Model and hyperparameter tuning using GridSearchCV
-model = XGBClassifier(random_state=424,tree_method='gpu_hist', gpu_id=0, predictor = 'gpu_predictor')
+model = XGBClassifier(random_state=1336,tree_method='gpu_hist', gpu_id=0, predictor = 'gpu_predictor')
 
 
 # 'n_estimators' : [100, 200, 300, 400, 500, 1000] 디폴트 100 / 1~inf / 정수
