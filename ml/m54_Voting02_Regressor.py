@@ -49,5 +49,21 @@ for i,value in enumerate(data_list):
         print("{0} R2 : {1:4f}".format(class_name, score2))
         li.append(score2)
     print(li)
+
+# 디아벳
+# model.score :  0.32668887363050436
+# Voting.r2 :  0.32668887363050436
+# XGBRegressor R2 : 0.210424
+# LGBMRegressor R2 : 0.335687
+# CatBoostRegressor R2 : 0.323708
+# [0.2104239542910319, 0.3356871311484668, 0.3237078721406743]
+
+# 캘리포니아
+# model.score :  0.8526566162322068
+# Voting.r2 :  0.8526566162322068
+# XGBRegressor R2 : 0.835095
+# LGBMRegressor R2 : 0.839618
+# CatBoostRegressor R2 : 0.855336
+# [0.8350945020148811, 0.8396184794295622, 0.8553363257900071]
     
 

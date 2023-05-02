@@ -5,7 +5,7 @@
 
 import numpy as np
 import pandas as pd
-from sklearn.datasets import load_breast_cancer
+from sklearn.datasets import load_iris, load_breast_cancer,load_wine, load_digits, fetch_covtype
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
@@ -17,10 +17,17 @@ from sklearn.ensemble import RandomForestClassifier,BaggingClassifier
 from sklearn.ensemble import VotingClassifier, StackingClassifier
 
 #1. 데이터
-x,y  = load_breast_cancer(return_X_y=True)
+path = './_data/dacon_diabetes/'
+path_save = './_save/dacon_diabetes/'
+
+train_set = pd.read_csv(path + 'train.csv',index_col=0)
+test_set = pd.read_csv(path + 'test.csv',index_col=0)
+
+x=train_set.drop(['Outcome'], axis=1)
+y=train_set['Outcome']
 
 x_train, x_test, y_train, y_test = train_test_split(
-    x,y, shuffle= True, train_size=0.8, random_state=1030
+    x,y, shuffle= True, train_size=0.8, random_state=1030,stratify=y
 )
 
 scaler = StandardScaler()
@@ -39,7 +46,7 @@ model = StackingClassifier(
     # final_estimator=KNeighborsClassifier(),
     final_estimator=RandomForestClassifier(),
     # final_estimator=VotingClassifier('주저리주저리') 넣을순 있는데 성능이 좋을지는 모른다
-) 
+    ) 
 
 #3. 훈련
 model.fit(x_train,y_train)
@@ -58,8 +65,8 @@ for model2 in Classifiers:
     class_name = model2.__class__.__name__ 
     print("{0}정확도 : {1:4f}".format(class_name, score2))
 
-# model.score :  0.956140350877193
-# Stacking.acc :  0.956140350877193
-# LogisticRegression정확도 : 0.964912
-# KNeighborsClassifier정확도 : 0.929825
-# DecisionTreeClassifier정확도 : 0.912281
+# model.score :  0.7480916030534351
+# Stacking.acc :  0.7480916030534351
+# LogisticRegression정확도 : 0.801527
+# KNeighborsClassifier정확도 : 0.755725
+# DecisionTreeClassifier정확도 : 0.656489

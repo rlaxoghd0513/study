@@ -57,4 +57,5 @@ for model2 in Classifiers:
     y_pred = model2.predict(x_test)
     score2 = accuracy_score(y_test,y_pred)
     class_name = model2.__class__.__name__ 
+    #model2.__class__.__name__은 model2 객체의 클래스 이름을 문자열 형태로 반환합니다.
     print("{0}정확도 : {1:4f}".format(class_name, score2))

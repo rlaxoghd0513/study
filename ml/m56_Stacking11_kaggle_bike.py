@@ -5,19 +5,30 @@
 
 import numpy as np
 import pandas as pd
-from sklearn.datasets import load_breast_cancer
+from sklearn.datasets import load_diabetes, fetch_california_housing
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score,r2_score
 
 from sklearn.linear_model import LogisticRegression
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.ensemble import RandomForestClassifier,BaggingClassifier
-from sklearn.ensemble import VotingClassifier, StackingClassifier
+from sklearn.neighbors import KNeighborsRegressor
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.ensemble import RandomForestRegressor,BaggingClassifier
+from sklearn.ensemble import VotingClassifier, StackingClassifier, StackingRegressor
+from xgboost import XGBRegressor
+from catboost import CatBoostRegressor
 
 #1. 데이터
-x,y  = load_breast_cancer(return_X_y=True)
+path='./_data/kaggle_bike/'
+path_save='./_save/kaggle_bike/'    
+
+train_csv = pd.read_csv(path + 'train.csv',
+                        index_col=0)                 
+
+train_csv = train_csv.dropna()   
+
+x = train_csv.drop(['count'], axis=1)   
+y = train_csv['count']
 
 x_train, x_test, y_train, y_test = train_test_split(
     x,y, shuffle= True, train_size=0.8, random_state=1030
@@ -28,16 +39,16 @@ x_train =  scaler.fit_transform(x_train)
 x_test =  scaler.fit_transform(x_test)
 
 #2. 모델
-lr = LogisticRegression()
-knn = KNeighborsClassifier(n_neighbors=8)
-dt = DecisionTreeClassifier()
+knn = KNeighborsRegressor(n_neighbors=8)
+xgb = XGBRegressor()
+cat = CatBoostRegressor(verbose=0)
 
 # model = VotingClassifier(
-model = StackingClassifier(
-    estimators=[('LR', lr), ('KNN', knn), ('DT', dt)],#voting안먹힘
+model = StackingRegressor(
+    estimators=[('knn', knn), ('xgb', xgb), ('cat', cat)],#voting안먹힘
     # final_estimator=LogisticRegression(), #디폴트는 logisticregression #predict한걸 훈련할 모델 
     # final_estimator=KNeighborsClassifier(),
-    final_estimator=RandomForestClassifier(),
+    final_estimator=RandomForestRegressor(),
     # final_estimator=VotingClassifier('주저리주저리') 넣을순 있는데 성능이 좋을지는 모른다
 ) 
 
@@ -47,19 +58,19 @@ model.fit(x_train,y_train)
 #4. 평가, 예측
 y_pred = model.predict(x_test)
 print('model.score : ', model.score(x_test,y_test))
-print("Stacking.acc : ", accuracy_score(y_test,y_pred))
+print("Stacking.r2 : ", r2_score(y_test,y_pred))
 
-Classifiers = [lr,knn,dt]
+Classifiers = [knn,xgb,cat]
 
 for model2 in Classifiers:
     model2.fit(x_train,y_train)
     y_pred = model2.predict(x_test)
-    score2 = accuracy_score(y_test,y_pred)
+    score2 = r2_score(y_test,y_pred)
     class_name = model2.__class__.__name__ 
     print("{0}정확도 : {1:4f}".format(class_name, score2))
 
-# model.score :  0.956140350877193
-# Stacking.acc :  0.956140350877193
-# LogisticRegression정확도 : 0.964912
-# KNeighborsClassifier정확도 : 0.929825
-# DecisionTreeClassifier정확도 : 0.912281
+# model.score :  0.9987925928624473
+# Stacking.r2 :  0.9987925928624473
+# KNeighborsRegressor정확도 : 0.973261
+# XGBRegressor정확도 : 0.998554
+# CatBoostRegressor정확도 : 0.998695
