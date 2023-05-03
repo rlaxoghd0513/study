@@ -52,8 +52,11 @@ print(x.shape, y.shape) #(20, 3) (20, 3)
 # # MultiOutputRegressor 스코어 0.0021921173091030005
 # # [[138.97756017  33.09066774  67.61547996]]
 
-model = CatBoostRegressor(loss_function='MultiRMSE')
+model = CatBoostRegressor(loss_function='MultiRMSE') #캣부스트에 이런 옵션이 있다 multioutputregressor 대신 사용 가능
 model.fit(x,y)
 y_pred = model.predict(x)
 print(model.__class__.__name__,'스코어',mean_absolute_percentage_error(y, y_pred))
 print(model.predict([[2,110,43]]))
+
+# CatBoostRegressor 스코어 0.0009001531506517748
+# [[138.21649371  32.99740595  67.8741709 ]]
