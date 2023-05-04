@@ -75,7 +75,7 @@ print(train_x.shape)
 cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=55)
 
 # Model and hyperparameter tuning using GridSearchCV
-model = CatBoostClassifier(iterations=1)
+model = CatBoostClassifier(iterations=, zero_division = )
 
 model.fit(train_x, train_y)
 

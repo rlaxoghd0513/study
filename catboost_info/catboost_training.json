@@ -1,5 +1,14 @@
 {
-"meta":{"test_sets":[],"test_metrics":[],"learn_metrics":[{"best_value":"Min","name":"Logloss"}],"launch_mode":"Train","parameters":"","iteration_count":1,"learn_sets":["learn"],"name":"experiment"},
+"meta":{"test_sets":["test","test1"],"test_metrics":[{"best_value":"Min","name":"MultiClass"}],"learn_metrics":[{"best_value":"Min","name":"MultiClass"}],"launch_mode":"Train","parameters":"","iteration_count":10,"learn_sets":["learn"],"name":"experiment"},
 "iterations":[
-{"learn":[0.5063476563],"iteration":0,"passed_time":0.2664698683,"remaining_time":0}
+{"learn":[0.2966043313],"iteration":0,"passed_time":0.0004436064256,"remaining_time":0.00399245783,"test1":[0.2900549802],"test":[0.2966043313]},
+{"learn":[0.1781498575],"iteration":1,"passed_time":0.0007387230331,"remaining_time":0.002954892132,"test1":[0.1821225487],"test":[0.1781498575]},
+{"learn":[0.1245128347],"iteration":2,"passed_time":0.001033049964,"remaining_time":0.002410449917,"test1":[0.1391425775],"test":[0.1245128347]},
+{"learn":[0.1047902082],"iteration":3,"passed_time":0.001294536992,"remaining_time":0.001941805488,"test1":[0.1325344598],"test":[0.1047902082]},
+{"learn":[0.08306909815],"iteration":4,"passed_time":0.001569338874,"remaining_time":0.001569338874,"test1":[0.142368072],"test":[0.08306909815]},
+{"learn":[0.06838007158],"iteration":5,"passed_time":0.001841914779,"remaining_time":0.001227943186,"test1":[0.1530839925],"test":[0.06838007158]},
+{"learn":[0.05403448889],"iteration":6,"passed_time":0.0021047968,"remaining_time":0.0009020557715,"test1":[0.1460450807],"test":[0.05403448889]},
+{"learn":[0.04628307127],"iteration":7,"passed_time":0.002368371307,"remaining_time":0.0005920928268,"test1":[0.1432858091],"test":[0.04628307127]},
+{"learn":[0.04108910038],"iteration":8,"passed_time":0.002645079345,"remaining_time":0.000293897705,"test1":[0.1322092687],"test":[0.04108910038]},
+{"learn":[0.03759852209],"iteration":9,"passed_time":0.002927453919,"remaining_time":0,"test1":[0.1370610574],"test":[0.03759852209]}
 ]}

@@ -1,7 +1,7 @@
 from bayes_opt import BayesianOptimization
 from xgboost import XGBClassifier
 import numpy as np
-from sklearn.datasets import load_iris, load_breast_cancer, load_wine, load_digits, fetch_covtype
+from sklearn.datasets import load_iris, load_wine, load_digits, fetch_covtype
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score, accuracy_score
@@ -11,7 +11,7 @@ import time
 
 
 #1데이터
-data_list = [load_iris, load_wine, load_digits, fetch_covtype]
+data_list = [load_iris, load_wine, load_digits]
 for i,value in enumerate(data_list):
     x,y = value(return_X_y=True)
     x_train, x_test, y_train, y_test = train_test_split(x,y, random_state=333, shuffle=True, train_size=0.8)

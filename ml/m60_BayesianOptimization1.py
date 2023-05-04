@@ -1,4 +1,5 @@
-# BayesianOptimization 최댓값 찾는거
+# BayesianOptimization 
+# 최댓값 찾는거
 #회귀할때 어쩌라고
 
 param_bounds = {'x1':(-1,5),#범위가 -1에서 5사이    #텍스트 형태로 넣어주고 범위는 튜플 형태로 넣어준다

@@ -53,7 +53,7 @@ lgb_bo = BayesianOptimization(f = lgb_hamsu,
                                   random_state = 333)
 start_time = time.time()
     
-n_iter = 1
+n_iter = 100
 lgb_bo.maximize(init_points=5, n_iter=n_iter) #init_points 초기 포인트 찍고 여기서부터 n_iter가 시작된다
 end_time = time.time()
     
