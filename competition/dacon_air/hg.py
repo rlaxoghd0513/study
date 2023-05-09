@@ -58,7 +58,7 @@ pf = PolynomialFeatures(degree=2)
 train_x = pf.fit_transform(train_x)
 
 # Split the training dataset into a training set and a validation set
-for k in range(6601, 6700):
+for k in range(7701, 7750):
     
     train_x, val_x, train_y, val_y = train_test_split(train_x, train_y,test_size=0.3,shuffle=True,random_state=k)
 
@@ -86,13 +86,18 @@ for k in range(6601, 6700):
     recall = recall_score(val_y, val_y_pred, average='weighted')
     log = log_loss(val_y, val_y_pred)
 
-    print('Accuracy_score:',acc)
-    print('F1 Score:f1',f1)
+    # print('Accuracy_score:',acc)
+    # print('F1 Score:f1',f1)
+    print(f'================{k}======================')
     print('logloss :', log)
     y_pred = model.predict_proba(test_x)
-    print(y_pred[:,0])
+    # print(y_pred[:,0])
     print('not_delayave : ', y_pred[:,0].mean())
     print('delayavr : ', y_pred[:,1].mean())
-    if y_pred[:,0].mean()<0.5:
+    
+    from scipy.stats import mode
+    y_pred_mode = mode(y_pred[:,0])[0]
+    # if 0.3378<=y_pred[:,0].mean()<=0.3383:
+    if 0.316<=y_pred_mode<=0.321:
         submission = pd.DataFrame(data=y_pred, columns=sample_submission.columns, index=sample_submission.index)
         submission.to_csv(f'c:/study/_save/dacon_air/2040submission_{k}.csv', float_format='%.3f')
