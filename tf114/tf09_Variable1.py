@@ -12,6 +12,8 @@ print('aaa:', aaa)
 sess.close()
 
 #초기화 두번째 방법
+#변수는 variable에서만 사용한다
+
 sess = tf.compat.v1.Session()
 sess.run(tf.compat.v1.global_variables_initializer())
 bbb = 변수.eval(session=sess) #텐서플로 데이터형인 '변수'를 파이썬에서 볼수 있는 놈으로 바꿔준다
