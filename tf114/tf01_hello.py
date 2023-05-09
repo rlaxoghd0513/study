@@ -12,4 +12,5 @@ print(aaa)            #Tensor("Const:0", shape=(), dtype=string)
 
 # sess = tf.Session() #이게 추가가 됨.
 sess = tf.compat.v1.Session()
-print(sess.run(aaa)) #b'Hello world' b는 바이너리.
+print(sess.run(aaa)) #b'Hello world' b는 바이너리.  
+#아웃풋 출력시킬때마다 sess.run을 넣어야됨

@@ -1,2 +1,0 @@
-*.psd filter=lfs diff=lfs merge=lfs -text
-_data/dacon_air/*.csv filter=lfs diff=lfs merge=lfs -text
