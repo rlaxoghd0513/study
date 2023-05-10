@@ -12,7 +12,7 @@ sess = tf.compat.v1.Session()
 sess.run(tf.global_variables_initializer())
 
 # 2. 모델 구성
-hypothesis = x * w + b #loss라고 보면 된다
+hypothesis = x * w + b
 
 # 3-1. 컴파일
 loss = tf.reduce_mean(tf.square(hypothesis - y))
@@ -21,7 +21,7 @@ train = optimizer.minimize(loss)
 
 # 3-2. 훈련
 with tf.compat.v1.Session() as sess:
-    sess.run(tf.global_variables_initializer())
+    sess.run(tf.global_variables_initializer()) #이게 변수로.
     epochs = 101
     for step in range(epochs):
         _, loss_val, w_val, b_val = sess.run([train, loss, w, b], feed_dict={x: [1, 2, 3, 4, 5], y: [2, 4, 6, 8, 10]})
@@ -61,3 +61,7 @@ ccc = w.eval() #InteractiveSession 안에 session=sess를 안넣어도됨.
 cc = b.eval()
 print('ccc : ', ccc, cc)
 sess.close()
+
+# aaa :  [-0.9852853] [-2.569937]
+# bbb : [-0.9852853] [-2.569937]
+# ccc :  [-0.9852853] [-2.569937]

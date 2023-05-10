@@ -114,17 +114,17 @@ print(test_input_dataset.info())
 print(test_aws_files.info())
 
 ################################# test_aws_files 결측치 iterative imputer#####################################
-# imputer = IterativeImputer(estimator=XGBRegressor()) #????
-# test_aws_files = imputer.fit_transform(test_aws_files) #결측치에 각 열의 평균을 넣는다
-# print(test_aws_files)
-# columns = ['기온(°C)','풍향(deg)','풍속(m/s)','강수량(mm)','습도(%)']
-# test_aws_files = pd.DataFrame(test_aws_files, columns=columns)
-# print(test_aws_files.info())
-imputer = SimpleImputer()
-test_aws_files = imputer.fit_transform(test_aws_files)
+imputer = IterativeImputer(estimator=XGBRegressor(), random_state=42) #????
+test_aws_files = imputer.fit_transform(test_aws_files) #결측치에 각 열의 평균을 넣는다
+print(test_aws_files)
 columns = ['기온(°C)','풍향(deg)','풍속(m/s)','강수량(mm)','습도(%)']
 test_aws_files = pd.DataFrame(test_aws_files, columns=columns)
 print(test_aws_files.info())
+# imputer = SimpleImputer()
+# test_aws_files = imputer.fit_transform(test_aws_files)
+# columns = ['기온(°C)','풍향(deg)','풍속(m/s)','강수량(mm)','습도(%)']
+# test_aws_files = pd.DataFrame(test_aws_files, columns=columns)
+# print(test_aws_files.info())
 
 
 ################################### train합치기  ###############################################
@@ -209,25 +209,27 @@ x = train_dataset.drop(['PM2.5'], axis=1)
 
 print(x, '\n', y)
 
-x_train,x_test, y_train, y_test = train_test_split(x,y, random_state = 333, shuffle=True, train_size = 0.8)
+x_train,x_test, y_train, y_test = train_test_split(x,y, random_state = 42, shuffle=True, train_size = 0.9)
 
-parameter ={
-            'learning_rate' : 0.02, #일반적으로 가장 성능에 영향을 많이 끼침. 경사하강법에서 얼만큼씩 하강할것이냐를 뜻함. 웨이트를 찾을때 적절한 러닝레이트 필요
-            'depth':8,
-            'iterations':5000,
-            'l2_leaf_reg' : 5,
-            'random_seed' : 4321
-            }
+parameter = {
+    'hidden_layer_sizes':(256,128,64),
+            'max_iter':500,
+           'activation':'relu',
+    'solver':'lbfgs',
+    'random_state':7777,
+    'learning_rate':'invscaling',
+    'alpha':0.001}
+
 
 #2 모델구성
-model = CatBoostRegressor()
+model = MLPRegressor(verbose=1)
 
 #3 컴파일 훈련
-model.set_params(**parameter, eval_metric = 'MAE', early_stopping_rounds = 150) # model.compile이라고 생각하면 된다
+model.set_params(**parameter, early_stopping = True, validation_fraction=0.05, n_iter_no_change=150) # model.compile이라고 생각하면 된다
 
 start_time = time.time()
 
-model.fit(x_train, y_train,verbose=1, eval_set = [(x_train,y_train),(x_test,y_test)])
+model.fit(x_train, y_train)
 
 end_time = time.time()
 print('걸린시간:', round(end_time - start_time,2), '초')
@@ -280,9 +282,3 @@ date = datetime.datetime.now()
 date = date.strftime("%m%d_%H%M")
 
 answer_sample_csv.to_csv(path_save +str(round(mae, 5))+ date +'.csv', index=None) #csv로 내보내기
-
-# mae: 0.0357403441525586
-# mae: 0.03721856739792848
-# mae: 0.03541929671654184
-
-
