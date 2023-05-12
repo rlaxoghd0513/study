@@ -1,8 +1,9 @@
 import tensorflow as tf
 
-x_train = [1]
-y_train = [2]
-
+x_train = [1,2,3]
+y_train = [1,2,3]
+x_test = [4,5,6]
+y_test = [4,5,6]
 x = tf.compat.v1.placeholder(tf.float32)
 y = tf.compat.v1.placeholder(tf.float32)
 
@@ -43,7 +44,7 @@ for step in range(21):
     up_history.append(up)
     w_history.append(w_v)
     loss_history.append(loss_v) #리스트 값이니까 sess.close해도 안없어진다
-    
+
 sess.close()
 
 print('========================up_history==============')
@@ -53,3 +54,14 @@ print(w_history)
 print('====================loss_history================')
 print(loss_history)
 # up_history랑 w_history랑 똑같다
+
+#########실습 R2, mae 만들어라############
+from sklearn.metrics import r2_score, mean_absolute_error
+
+y_predict = x_test * w_v
+print(y_predict)#[4.00006676 5.00008345 6.00010014]
+r2 = r2_score(y_predict, y_test) #앞뒤 바뀌어도 상관 x
+print('r2:', r2)
+
+mae = mean_absolute_error(y_predict, y_test)
+print('mae:', mae)
