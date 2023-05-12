@@ -21,7 +21,7 @@ hypothesis = x * w + b #hypothesis = loss라고 보면됨.
 
 #3-1. 컴파일
 loss = tf.reduce_mean(tf.square(hypothesis - y)) # mse 
-optimizer = tf.train.GradientDescentOptimizer(learning_rate=0.05)
+optimizer = tf.train.GradientDescentOptimizer(learning_rate=0.05)  #너무 작게 하면 로컬미니마 글로벌미니마에 빠진다 
 train = optimizer.minimize(loss) 
 
 #3-2. 훈련

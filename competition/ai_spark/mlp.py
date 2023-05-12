@@ -121,11 +121,11 @@ print(test_aws_files.info())
 # test_aws_files = pd.DataFrame(test_aws_files, columns=columns)
 # print(test_aws_files.info())
 
-# # imputer = SimpleImputer()
-# test_aws_files = imputer.fit_transform(test_aws_files)
-# columns = ['기온(°C)','풍향(deg)','풍속(m/s)','강수량(mm)','습도(%)']
-# test_aws_files = pd.DataFrame(test_aws_files, columns=columns)
-# print(test_aws_files.info())
+imputer = SimpleImputer()
+test_aws_files = imputer.fit_transform(test_aws_files)
+columns = ['기온(°C)','풍향(deg)','풍속(m/s)','강수량(mm)','습도(%)']
+test_aws_files = pd.DataFrame(test_aws_files, columns=columns)
+print(test_aws_files.info())
 
 
 ################################### train합치기  ###############################################
