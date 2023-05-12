@@ -114,13 +114,14 @@ print(test_input_dataset.info())
 print(test_aws_files.info())
 
 ################################# test_aws_files 결측치 iterative imputer#####################################
-imputer = IterativeImputer(estimator=XGBRegressor(), random_state=42) #????
-test_aws_files = imputer.fit_transform(test_aws_files) #결측치에 각 열의 평균을 넣는다
-print(test_aws_files)
-columns = ['기온(°C)','풍향(deg)','풍속(m/s)','강수량(mm)','습도(%)']
-test_aws_files = pd.DataFrame(test_aws_files, columns=columns)
-print(test_aws_files.info())
-# imputer = SimpleImputer()
+# imputer = IterativeImputer(estimator=XGBRegressor(), random_state=42) #????
+# test_aws_files = imputer.fit_transform(test_aws_files) #결측치에 각 열의 평균을 넣는다
+# print(test_aws_files)
+# columns = ['기온(°C)','풍향(deg)','풍속(m/s)','강수량(mm)','습도(%)']
+# test_aws_files = pd.DataFrame(test_aws_files, columns=columns)
+# print(test_aws_files.info())
+
+# # imputer = SimpleImputer()
 # test_aws_files = imputer.fit_transform(test_aws_files)
 # columns = ['기온(°C)','풍향(deg)','풍속(m/s)','강수량(mm)','습도(%)']
 # test_aws_files = pd.DataFrame(test_aws_files, columns=columns)
@@ -195,8 +196,8 @@ print(test_dataset.info())
 train_dataset = train_dataset.dropna()
 print(train_dataset)
 print(test_dataset)
-train_dataset = train_dataset.round(3)
-test_dataset = test_dataset.round(3)
+train_dataset = train_dataset.round(4)
+test_dataset = test_dataset.round(4)
 print(train_dataset)
 print(test_dataset)
 print(train_dataset.info())
@@ -212,20 +213,20 @@ print(x, '\n', y)
 x_train,x_test, y_train, y_test = train_test_split(x,y, random_state = 42, shuffle=True, train_size = 0.9)
 
 parameter = {
-    'hidden_layer_sizes':(256,128,64),
-            'max_iter':500,
+    'hidden_layer_sizes':(128,64,16),
+            'max_iter':1000,
            'activation':'relu',
-    'solver':'lbfgs',
-    'random_state':7777,
-    'learning_rate':'invscaling',
-    'alpha':0.001}
+    'solver':'adam',
+    'random_state':42,
+    'learning_rate':'adaptive',
+    'alpha':0.0001}
 
 
 #2 모델구성
 model = MLPRegressor(verbose=1)
 
 #3 컴파일 훈련
-model.set_params(**parameter, early_stopping = True, validation_fraction=0.05, n_iter_no_change=150) # model.compile이라고 생각하면 된다
+model.set_params(**parameter, early_stopping = True, validation_fraction=0.1, n_iter_no_change=150) # model.compile이라고 생각하면 된다
 
 start_time = time.time()
 
