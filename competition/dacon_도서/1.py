@@ -226,7 +226,7 @@ from catboost import CatBoostRegressor
 from lightgbm import LGBMRegressor
 from sklearn.ensemble import RandomForestRegressor, ExtraTreesRegressor
 
-model = ExtraTreesRegressor(max_features=0.05, min_samples_split=12,random_state=42)
+model = ExtraTreesRegressor(max_features=0.05, min_samples_split=12, random_state=42)
 
 model.fit(x_train, y_train)
 
