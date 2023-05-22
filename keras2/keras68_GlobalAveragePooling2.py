@@ -52,16 +52,28 @@ model.add(Conv2D(64, (2,2), padding='same', input_shape=(32,32,3)))
 model.add(MaxPooling2D())    #커널처럼 중첩되지 않고 각 구역에서 가장 큰 애만 뽑는다
 model.add(Conv2D(64, (2,2), padding='valid', activation='relu'))
 model.add(Conv2D(32, 2)) #대부분 2,2 3,3으로 커널사이즈를 하니까 귀찮아서 2,2를 2만 써도 된다
-model.add(Flatten())
-# model.add(GlobalAveragePooling2D()) #Flatten대신에 쓸수 있다 , Flatten보다 통상 괜찮다 
+# model.add(Flatten())
+model.add(GlobalAveragePooling2D()) #Flatten대신에 쓸수 있다 , Flatten보다 통상 괜찮다 
+#Flatten 은 그냥 쭉 펴버리기 때문에 12*12*3 하는건데
+#글로벌에버리지풀링은  만약 위 레이어에서 받은 노드가 (None,12,12,3)면 12*12의 값을 평균낸다 그래서 연산량에 필터수만큼 값이 출력된다
 model.add(Dense(32))
 model.add(Dense(100, activation = 'softmax'))
 model.summary()
 
 #Flatten이랑 GlobalAveragePooling2D 연산량 비교
+
 ############################ Flatten ######################################
-
-
+# conv2d_2 (Conv2D)            (None, 14, 14, 32)        8224
+# _________________________________________________________________
+# flatten (Flatten)            (None, 6272)              0
+# _________________________________________________________________
+# dense (Dense)                (None, 32)                200736
+# _________________________________________________________________
+# dense_1 (Dense)              (None, 100)               3300
+# =================================================================
+# Total params: 229,540
+# Trainable params: 229,540
+# Non-trainable params: 0
 
 
 ################## GlobalAveragePooling2D #########################
