@@ -16,22 +16,23 @@ learning_rate = 0.25
 x_values = []  # x 값들을 저장하기 위한 리스트
 f_values = []  # f(x) 값들을 저장하기 위한 리스트
 
+print('epoch\t x\t f(x)')
+print('{:02d}\t {:6.5f}\t {:6.5f}\t'.format(0,x,f(x)))
 for i in range(epochs):
-    x_values.append(x)
-    f_values.append(f(x))
 
     x = x - learning_rate * gradient(x)
 
-    print(i+1, x, f(x))
+    print('{:02d}\t {:6.5f}\t {:6.5f}\t'.format(i+1,x,f(x)))
+
 
 # 그래프 그리기
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 
-x_values = np.array(x_values)
-f_values = np.array(f_values)
+# x_values = np.array(x_values)
+# f_values = np.array(f_values)
 
-plt.plot(x_values, f_values, 'k-')
-plt.grid()
-plt.xlabel('x')
-plt.ylabel('f(x)')
-plt.show()
+# plt.plot(x_values, f_values, 'k-')
+# plt.grid()
+# plt.xlabel('x')
+# plt.ylabel('f(x)')
+# plt.show()

@@ -71,4 +71,9 @@ x_test = scaler.transform(x_test)
 smote = SMOTE(random_state= 42, k_neighbors = 15)
 x_train, y_train = smote.fit_resample(x_train, y_train)
 # PCA, 랜덤오버샘플링
-lgb = LGBMClassifier(random_state=33, )
+lgb = LGBMClassifier(categorical_feature='false', random_state=55)
+
+lgb.fit(x_train, y_train)
+
+score = lgb.score(x_test, y_train)
+print(score)
