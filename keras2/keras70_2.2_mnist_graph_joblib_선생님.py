@@ -55,7 +55,7 @@ plt.plot(hist['val_acc'], marker = '.', c = 'blue', label = 'val_acc')
 plt.grid()
 plt.title('acc')
 plt.ylabel('acc')
-plt.xlabel('epochs')
+plt.xlabel('epochs')    
 plt.legend(['acc','val_acc'])
 
 plt.show()
