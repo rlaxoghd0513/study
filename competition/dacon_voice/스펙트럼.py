@@ -6,18 +6,15 @@ from tqdm.auto import tqdm
 import librosa
 
 from autogluon.tabular import TabularDataset, TabularPredictor
-from sklearn.manifold import TSNE
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
-from sklearn.preprocessing import MinMaxScaler, RobustScaler, MaxAbsScaler, StandardScaler, PowerTransformer, QuantileTransformer
+from sklearn.preprocessing import MinMaxScaler
 
 import warnings
 warnings.filterwarnings(action='ignore')
 
 CFG = {
-    'SR':22000, #높으면 잘 잘라줌
-    'N_MFCC':128, # Melspectrogram 벡터를 추출할 개수
-    'SEED':42
+    'SR': 22000,  # 높으면 잘 잘라줌
+    'N_MFCC': 128,  # Melspectrogram 벡터를 추출할 개수
+    'SEED': 42
 }
 
 def seed_everything(seed):
@@ -25,8 +22,7 @@ def seed_everything(seed):
     os.environ['PYTHONHASHSEED'] = str(seed)
     np.random.seed(seed)
 
-seed_everything(CFG['SEED']) # Seed 고정
-
+seed_everything(CFG['SEED'])  # Seed 고정
 
 train_df = pd.read_csv('./_data/dacon_voice/train.csv')
 test_df = pd.read_csv('./_data/dacon_voice/test.csv')
@@ -58,43 +54,38 @@ def get_mfcc_feature(df):
 
     mfcc_df = pd.concat([mfcc_mean_normalized, mfcc_max_normalized, mfcc_min_normalized], axis=1)
 
-
     return mfcc_df
 
 
-def get_feature_mel(df):
+def get_feature_contrast(df):
     features = []
     for path in tqdm(df['path']):
-        data, sr = librosa.load(path, sr=CFG['SR'])
-        n_fft = 2048
-        win_length = 2048
-        hop_length = 1024
-        n_mels = 128
-
-        D = np.abs(librosa.stft(data, n_fft=n_fft, win_length=win_length, hop_length=hop_length))
-        mel = librosa.feature.melspectrogram(S=D, sr=sr, n_mels=n_mels, hop_length=hop_length, win_length=win_length)
-
+        y, sr = librosa.load(path, sr=CFG['SR'])
+        contrast = librosa.feature.spectral_contrast(y=y, sr=sr, n_fft=2048, hop_length=1024)
         features.append({
-            'mel_mean': mel.mean(axis=1),
-            'mel_max': mel.min(axis=1),
-            'mel_min': mel.max(axis=1),
+            'contrast_mean': np.mean(contrast, axis=1),
+            'contrast_max': np.max(contrast, axis=1),
+            'contrast_min': np.min(contrast, axis=1),
         })
 
-    mel_df = pd.DataFrame(features)
-    mel_mean_df = pd.DataFrame(mel_df['mel_mean'].tolist(), columns=[f'mel_mean_{i}' for i in range(n_mels)])
-    mel_max_df = pd.DataFrame(mel_df['mel_max'].tolist(), columns=[f'mel_max_{i}' for i in range(n_mels)])
-    mel_min_df = pd.DataFrame(mel_df['mel_min'].tolist(), columns=[f'mel_min_{i}' for i in range(n_mels)])
+    contrast_df = pd.DataFrame(features)
+    contrast_mean_df = pd.DataFrame(contrast_df['contrast_mean'].tolist(), columns=[f'contrast_mean_{i}' for i in range(contrast.shape[0])])
+    contrast_max_df = pd.DataFrame(contrast_df['contrast_max'].tolist(), columns=[f'contrast_max_{i}' for i in range(contrast.shape[0])])
+    contrast_min_df = pd.DataFrame(contrast_df['contrast_min'].tolist(), columns=[f'contrast_min_{i}' for i in range(contrast.shape[0])])
 
-    return pd.concat([mel_mean_df, mel_max_df, mel_min_df], axis=1)
+    contrast_df = pd.concat([contrast_mean_df, contrast_max_df, contrast_min_df], axis=1)
+
+    return contrast_df
+
 
 train_mf = get_mfcc_feature(train_df)
 test_mf = get_mfcc_feature(test_df)
 
-train_mel = get_feature_mel(train_df)
-test_mel = get_feature_mel(test_df)
+train_contrast = get_feature_contrast(train_df)
+test_contrast = get_feature_contrast(test_df)
 
-train_x = pd.concat([train_mel, train_mf], axis=1)
-test_x = pd.concat([test_mel, test_mf], axis=1)
+train_x = pd.concat([train_contrast, train_mf], axis=1)
+test_x = pd.concat([test_contrast, test_mf], axis=1)
 
 train_y = train_df['label']
 
@@ -111,22 +102,17 @@ predictor = TabularPredictor(
 ).fit(train_data, presets='best_quality', time_limit=time_limit, ag_args_fit={'num_gpus': 0, 'num_cpus': 4})
 
 model_to_use = predictor.get_model_best()
+model_score = predictor.evaluate(test_data, model=model_to_use)
 model_pred = predictor.predict(test_data, model=model_to_use)
+
+print("Best Model Score:", model_score)
 
 submission = pd.read_csv('./_data/dacon_voice/sample_submission.csv')
 submission['label'] = model_pred
-submission.to_csv('./autogluon_음성감정.csv', index=False)
 
-# Fitting model: WeightedEnsemble_L3 ... Training model for up to 360.0s of the -35.08s of remaining time.
-        # 0.5733   = Validation score   (accuracy)
-        # 0.56s    = Training   runtime
-        # 0.0s     = Validation runtime
-# AutoGluon training complete, total runtime = 3635.69s ... Best model: "WeightedEnsemble_L3"
-# TabularPredictor saved. To load, use: predictor = TabularPredictor.load("AutogluonModels\ag-20230526_062002\")
+import datetime
+date = datetime.datetime.now()
+date = date.strftime("%m%d_%H%M")
+save_path = './_save/dacon_voice/'
 
-# Fitting model: WeightedEnsemble_L3 ... Training model for up to 360.0s of the -26.29s of remaining time.
-        # 0.5789   = Validation score   (accuracy)
-        # 0.55s    = Training   runtime
-        # 0.0s     = Validation runtime
-# AutoGluon training complete, total runtime = 3626.87s ... Best model: "WeightedEnsemble_L3"
-# TabularPredictor saved. To load, use: predictor = TabularPredictor.load("AutogluonModels\ag-20230526_091414\")
+submission.to_csv(save_path + date +str(round(model_score,4)) + '.csv', index= False)
