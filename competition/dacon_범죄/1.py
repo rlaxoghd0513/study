@@ -1,164 +1,181 @@
-import pandas as pd
-from unidecode import unidecode
-
-path = './_data/dacon_범죄/'
-train_csv = pd.read_csv(path + 'train.csv', index_col = 0)
-test_csv = pd.read_csv(path + 'test.csv', index_col = 0)
-# print(train_csv.shape) #(84406, 19)
-# print(train_csv.columns) #Index(['월', '요일', '시간', '소관경찰서', '소관지역', '사건발생거리', '강수량(mm)', '강설량(mm)','적설량(cm)', 
-                                # '풍향', '안개', '짙은안개', '번개', '진눈깨비', '서리', '연기/연무', '눈날림','범죄발생지', 'TARGET'],
-
-new_columns = [unidecode(col) for col in train_csv.columns]
-train_csv.columns = new_columns
-
-new_columns1 = [unidecode(col) for col in test_csv.columns]
-test_csv.columns = new_columns1
-
-# print(train_csv.columns)
-#요일 범죄발생지
+import optuna
+import numpy as np
+from sklearn.datasets import make_classification
+from sklearn.model_selection import StratifiedKFold
+from sklearn.metrics import accuracy_score
+from sklearn.ensemble import StackingClassifier
+from xgboost import XGBClassifier
+from lightgbm import LGBMClassifier
 from sklearn.preprocessing import LabelEncoder
+import pandas as pd
+import random
+import os
+from sklearn.preprocessing import LabelEncoder, OneHotEncoder, StandardScaler
+from sklearn.model_selection import GridSearchCV
+from imblearn.over_sampling import SMOTE
+from tqdm import tqdm
+from catboost import CatBoostClassifier
+from sklearn.ensemble import RandomForestClassifier
+
+def seed_everything(seed):
+    random.seed(seed)
+    os.environ['PYTHONHASHSEED'] = str(seed)
+    np.random.seed(seed)
+
+seed_everything(42)  # Seed 고정
+
+path = 'c:/users/bitcamp/study/_data/dacon_범죄/'
+save_path = 'c:/users/bitcamp/study/_save/dacon_범죄/'
+
+train = pd.read_csv(path + 'train.csv')
+test = pd.read_csv(path + 'test.csv')
+
+# train['날씨'] = train['강수량(mm)'] + train['강설량(mm)'] + train['적설량(cm)']
+# test['날씨'] = test['강수량(mm)'] + test['강설량(mm)'] + test['적설량(cm)']
+
+# train = train.drop(['강수량(mm)' , '적설량(cm)', '강설량(mm)'], axis=1)
+# test = test.drop(['강수량(mm)','강설량(mm)','적설량(cm)'], axis=1)
+
+# x_train = train.drop(['ID', 'TARGET'], axis = 1)
+x_train = train.drop(['ID', 'TARGET'], axis = 1)
+y_train = train['TARGET']
+x_test = test.drop('ID', axis = 1)
+
 le = LabelEncoder()
-train_csv['yoil'] = le.fit_transform(train_csv['yoil'])
-test_csv['yoil'] = le.transform(test_csv['yoil'])
 
-train_csv['beomjoebalsaengji'] = le.fit_transform(train_csv['beomjoebalsaengji'])
-test_csv['beomjoebalsaengji'] = le.transform(test_csv['beomjoebalsaengji'])
+# '요일'과 '범죄발생지' 특성에 대해 Label Encoding 진행
+for feature in ['요일', '범죄발생지']:
+    # Train 데이터에 대해 fit과 transform을 동시에 수행
+    x_train[feature] = le.fit_transform(x_train[feature])
+    # Test 데이터에 대해 transform만 수행
+    x_test[feature] = le.transform(x_test[feature])
 
-# print(train_csv.isnull().sum())
-# print(train_csv.info())
+x_train['강수량(mm)'] = x_train['강수량(mm)'].apply(lambda x: 0 if x == 0.000 else 1)
+x_test['강수량(mm)'] = x_test['강수량(mm)'].apply(lambda x: 0 if x == 0.000 else 1)
 
-x = train_csv.drop('TARGET', axis=1)
-y = train_csv['TARGET']
+x_train['강설량(mm)'] = x_train['강설량(mm)'].apply(lambda x: 0 if x == 0.0 else 1)
+x_test['강설량(mm)'] = x_test['강설량(mm)'].apply(lambda x: 0 if x == 0.0 else 1)
 
+x_train['적설량(cm)'] = x_train['적설량(cm)'].apply(lambda x: 0 if x == 0.0 else 1)
+x_test['적설량(cm)'] = x_test['적설량(cm)'].apply(lambda x: 0 if x == 0.0 else 1)
 
-# print(x.shape, y.shape)#(84406, 18) (84406,)
-############################################################################
-# print(x.corr()) #Correlation 상관    
+# Create a new feature 'is_weekend'
+x_train['is_weekend'] = x_train['요일'].apply(lambda x: 1 if x in ['토', '일'] else 0)
+x_test['is_weekend'] = x_test['요일'].apply(lambda x: 1 if x in ['토', '일'] else 0)
 
-# import matplotlib.pyplot as plt
-# import seaborn as sns
-# sns.set(font_scale=1.2)
-# sns.heatmap(data=x.corr(), square=True, annot=True, cbar=True)
-# plt.show()
-x['new'] = x['sogwangyeongcalseo']+x['sogwanjiyeog']
-test_csv['new'] = test_csv['sogwangyeongcalseo']+test_csv['sogwanjiyeog']
-x = x.drop('sogwangyeongcalseo', axis=1)
-x = x.drop('sogwanjiyeog', axis=1)
-test_csv = test_csv.drop('sogwangyeongcalseo', axis=1)
-test_csv = test_csv.drop('sogwanjiyeog', axis=1)
+# Create a new feature 'is_night'
 
-print(x.columns)
-#사건발생거리 강수량 적설량 
-x['sageonbalsaenggeori'] = x['sageonbalsaenggeori'].round(3)
-test_csv['sageonbalsaenggeori'] = test_csv['sageonbalsaenggeori'].round(3)
-x['gangseolryang(mm)'] = x['gangseolryang(mm)'].round(3)
-test_csv['gangseolryang(mm)'] = test_csv['gangseolryang(mm)'].round(3)
-x['jeogseolryang(cm)'] = x['jeogseolryang(cm)'].round(3)
-test_csv['jeogseolryang(cm)'] = test_csv['jeogseolryang(cm)'].round(3)
+x_train['morn'] = x_train['시간'].apply(lambda x: 0 if 0 <= x < 3 else (1 if 3 <= x < 6 else (2 if 6 <= x < 9 else (4 if 9 <= x <= 12 else None))))
+x_test['morn'] = x_test['시간'].apply(lambda x: 0 if 0 <= x < 3 else (1 if 3 <= x < 6 else (2 if 6 <= x < 9 else (4 if 9 <= x <= 12 else None))))
 
+#계절
+x_train['계절'] = x_train['월'].apply(lambda x: 0 if 1 <= x < 3 else (1 if 3 <= x < 6 else (2 if 6 <= x < 9 else (4 if 9 <= x < 12 else 0))))
+x_test['계절'] = x_test['월'].apply(lambda x: 0 if 1 <= x < 3 else (1 if 3 <= x < 6 else (2 if 6 <= x < 9 else (4 if 9 <= x < 12 else 0))))
 
-#######################################################################
-# from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
-# from sklearn.decomposition import PCA
-# pca = PCA(n_components=14)
-# x = pca.fit_transform(x)
-# print(x.shape) #(84406, 2)
-# test_csv = pca.transform(test_csv)
-# print(test_csv.shape)
-##############################################################################
-# from sklearn.preprocessing import PolynomialFeatures
-# poly = PolynomialFeatures()
-# x = poly.fit_transform(x)
-# test_csv = poly.transform(test_csv)
-# print(x.shape, test_csv.shape)
+it_column = ['안개','짙은안개','번개','진눈깨비','서리', '연기/연무', '눈날림']
+for i,value in enumerate(it_column):
+    x_train[value] = x_train[value].astype(int)
+    x_test[value] = x_test[value].astype(int)
 
-from sklearn.model_selection import train_test_split
-x_train, x_test, y_train, y_test = train_test_split(x,y,train_size=0.8, shuffle=True, random_state=42, stratify=y)
-# #################################################################################################################
+print(x_train.columns)
+# Index(['월', '요일', '시간', '소관경찰서', '소관지역', '사건발생거리', '강수량(mm)', '강설량(mm)',
+#        '적설량(cm)', '풍향', '안개', '짙은안개', '번개', '진눈깨비', '서리', '연기/연무', '눈날림',
+#        '범죄발생지', '날씨', 'is_weekend', 'morn', '계절'],
+print(x_train.head(10))
 
-from sklearn.preprocessing import MinMaxScaler, MaxAbsScaler, StandardScaler, RobustScaler, QuantileTransformer, PowerTransformer
-scaler = StandardScaler() # robust 이상치? minmax standard
+# 원핫인코딩할 칼럼 선택
+columns_to_encode = ['계절', 'morn', 'is_weekend','강수량(mm)', '적설량(cm)', '강설량(mm)','안개', '짙은안개','번개','진눈깨비', '서리', '연기/연무', '눈날림']
+
+# 선택된 칼럼들을 원핫인코딩
+x_train_encoded = pd.get_dummies(x_train, columns=columns_to_encode)
+x_test_encoded = pd.get_dummies(x_test, columns = columns_to_encode)
+
+# 원핫인코딩하지 않을 칼럼들은 그대로 유지
+columns_to_keep = ['월', '요일', '시간','소관경찰서', '소관지역', '사건발생거리', '풍향','범죄발생지']
+x_train_encoded[columns_to_keep] = x_train[columns_to_keep]
+x_test_encoded[columns_to_keep] = x_test[columns_to_keep]
+
+x_train = x_train_encoded
+x_test = x_test_encoded
+
+# Scaling the data
+scaler = StandardScaler()
 x_train = scaler.fit_transform(x_train)
 x_test = scaler.transform(x_test)
-test_csv = scaler.transform(test_csv)
 
-# ###################################################################################################################
-from xgboost import XGBClassifier
-from catboost import CatBoostClassifier
-from lightgbm import LGBMClassifier
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.model_selection import StratifiedKFold,KFold,GridSearchCV, cross_val_score, cross_val_predict, RandomizedSearchCV
+# Handle Imbalanced Data
+smote = SMOTE(random_state= 42, k_neighbors = 15)
+x_train, y_train = smote.fit_resample(x_train, y_train)
 
-n_splits = 5
-kfold = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=42)
 
-parameters = [
-    {"n_estimators": [100, 200,300],
-     "learning_rate": [0.1, 0.01, 0.05,0.001],
-    "max_depth": [4,5,6]},
+from sklearn.model_selection import train_test_split
+x_train, x_val, y_train, y_val = train_test_split(x_train, y_train, train_size = 0.95, shuffle=True, stratify=y_train, random_state=42)
 
-    {"n_estimators": [50, 100, 150],
-    "learning_rate": [0.1, 0.001, 0.01],
-    "max_depth": [5,6,7],
-    "colsample_bytree": [0.6, 0.9, 1]},
+print(np.unique(y_train))
+print(np.unique(y_val))
 
-    {"n_estimators": [100, 500],
-    "learning_rate": [0.1, 0.01, 0.5],
-    "max_depth": [4,5,6],
-    "colsample_bytree": [0.6, 0.9, 1]}]
+print(x_train.shape)
+print(x_val.shape)
+print(x_test.shape)
 
-xgb = XGBClassifier()
-model = RandomizedSearchCV(xgb, parameters, cv=kfold, n_jobs=-1, refit=True, verbose=1)
+base_models = [
+    ('catboost', CatBoostClassifier()),
+    ('lgbm', LGBMClassifier()),
+    ('xgb', XGBClassifier())
+]
 
-model.fit(x_train, y_train)
-# import numpy as np
-# import matplotlib.pyplot as plt
+# Define meta model
+meta_model = RandomForestClassifier()
 
-# def plot_feature_importances(model):                
-#         n_features = x.shape[1]
-#         plt.barh(np.arange(n_features),model.feature_importances_,align='center') 
-                                                                            
-#         plt.yticks(np.arange(n_features),x.columns) 
-                                                            
-#         plt.xlabel('Feature Importances')                        
-#         plt.ylabel('Features')
-#         plt.ylim(-1, n_features) 
-        
-  
-#         plt.title('XGBClassifier')
+# Define the stacking ensemble model
+stacking_model = StackingClassifier(estimators=base_models, final_estimator=meta_model)
+
+# Define the objective function for Optuna optimization
+def objective(trial):
+    # Define the hyperparameters to optimize
+    params = {
+        'catboost__learning_rate': trial.suggest_loguniform('catboost__learning_rate', 0.01, 0.1),
+        'lgbm__learning_rate': trial.suggest_loguniform('lgbm__learning_rate', 0.01, 0.1),
+        'xgb__learning_rate': trial.suggest_loguniform('xgb__learning_rate', 0.01, 0.1)
+    }
     
-# plt.subplot(2,2,2)
-# plot_feature_importances(model)
-# plt.show()
-# print(x.columns)
-# print(test_csv.columns)
+    # Set the hyperparameters for the stacking model
+    stacking_model.set_params(**params)
+    stacking_model.fit(x_train, y_train)
+    pred = stacking_model.predict(x_val)
+    acc = accuracy_score(y_val, pred)
+    return acc
 
-print('최적매개변수:', model.best_estimator_)
-print('model_score:', model.score(x_test, y_test))
+# Optimize the hyperparameters using Optuna
+study = optuna.create_study(direction='maximize')
+study.optimize(objective, n_trials=50)
 
-y_predict = model.best_estimator_.predict(x_test)
+# Get the best hyperparameters
+best_params = study.best_params
+print("Best Hyperparameters:", best_params)
 
-from sklearn.metrics import accuracy_score, f1_score
-acc = accuracy_score(y_test, y_predict)
-print('acc:', acc)
+# Train the stacking model with the best hyperparameters
+stacking_model.set_params(**best_params)
+stacking_model.fit(x_train, y_train)
 
-f1 = f1_score(y_test, y_predict, average= 'macro')
-print('f1:', f1)
+# Make predictions with the trained stacking model
+y_pred = stacking_model.predict(x_val)
+accuracy = accuracy_score(y_val, y_pred)
+print("Validation Accuracy:", accuracy)
 
-path_save = './_save/dacon_범죄/'
 
-y_submit = model.best_estimator_.predict(test_csv)
+predictions = stacking_model.predict(x_test)
 
-submission = pd.read_csv(path + 'sample_submission.csv', index_col =0)
+# 제출 파일을 읽어옵니다.
+submit = pd.read_csv(path + 'sample_submission.csv')
 
-submission['TARGET'] = y_submit
+# 예측한 값을 TARGET 컬럼에 할당합니다.
+submit['TARGET'] = predictions
 
+#time'
 import datetime
 date = datetime.datetime.now()
 date = date.strftime("%m%d_%H%M")
 
-submission.to_csv(path_save + date + '_' + str(round(f1, 2)) + '.csv')
-
-
-
-#poly안하나거 f1: 0.5254281922070441
+# 예측한 결과를 파일로 저장합니다. index 인자의 값을 False로 설정하지 않으면 제출이 정상적으로 진행되지 않습니다.
+submit.to_csv(save_path + date +'.csv', index= False)
