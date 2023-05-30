@@ -12,7 +12,7 @@ import warnings
 warnings.filterwarnings(action='ignore')
 
 CFG = {
-    'SR': 22000,  # 높으면 잘 잘라줌
+    'SR': 80000,  # 높으면 잘 잘라줌
     'N_MFCC': 128,  # Melspectrogram 벡터를 추출할 개수
     'SEED': 42
 }
@@ -100,22 +100,30 @@ test_x = pd.concat([test_mf, test_contrast], axis=1)
 train_y = train_df['label']
 
 train_x['label'] = train_df['label']
+
+from sklearn.model_selection import train_test_split
+train_x, val_x, train_y, val_y = train_test_split(train_x, train_y, test_size=0.1, random_state=CFG['SEED'])
+
 train_data = TabularDataset(train_x)
+val_data = TabularDataset(val_x)
 test_data = TabularDataset(test_x)
 
 label = 'label'
 eval_metric = 'accuracy'
-time_limit = 3600 * 2
+time_limit = 3600 * 1
 
 predictor = TabularPredictor(
     label=label, eval_metric=eval_metric
 ).fit(train_data, presets='best_quality', time_limit=time_limit, ag_args_fit={'num_gpus': 0, 'num_cpus': 4})
 
 model_to_use = predictor.get_model_best()
-model_score = predictor.evaluate(test_data, model=model_to_use)
+model_score = predictor.evaluate(val_data, model=model_to_use)
 model_pred = predictor.predict(test_data, model=model_to_use)
 
 print("Best Model Score:", model_score)
+
+accuracy = model_score['accuracy']
+accuracy_rounded = round(accuracy, 4)
 
 submission = pd.read_csv('./_data/dacon_voice/sample_submission.csv')
 submission['label'] = model_pred
@@ -125,4 +133,4 @@ date = datetime.datetime.now()
 date = date.strftime("%m%d_%H%M")
 save_path = './_save/dacon_voice/'
 
-submission.to_csv(save_path + date +str(round(model_score,4)) + '.csv', index= False)
+submission.to_csv(save_path + date + '_' + str(accuracy_rounded) + '.csv', index= False)

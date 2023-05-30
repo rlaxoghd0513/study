@@ -9,15 +9,20 @@ from autogluon.tabular import TabularDataset, TabularPredictor
 from sklearn.manifold import TSNE
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-from sklearn.preprocessing import MinMaxScaler, RobustScaler, MaxAbsScaler, StandardScaler, PowerTransformer, QuantileTransformer
+import optuna
 
+from sklearn.preprocessing import StandardScaler
+from xgboost import XGBClassifier
+from sklearn.metrics import accuracy_score
+from sklearn.model_selection import train_test_split
 import warnings
 warnings.filterwarnings(action='ignore')
 
 CFG = {
-    'SR':44000, #높으면 잘 잘라줌
-    'N_MFCC':40, # Melspectrogram 벡터를 추출할 개수
-    'SEED':42
+    'SR': 22100,
+    'N_MFCC': 128,
+    'N_MELS': 769,  # Update the number of mel frequency coefficients
+    'SEED': 42
 }
 
 def seed_everything(seed):
@@ -33,8 +38,6 @@ test_df = pd.read_csv('./_data/dacon_voice/test.csv')
 
 train_df['path'] = './_data/dacon_voice/' + train_df['path']
 test_df['path'] = './_data/dacon_voice/' + test_df['path']
-
-scaler = MinMaxScaler()
 
 def get_mfcc_feature(df):
     features = []
@@ -52,14 +55,7 @@ def get_mfcc_feature(df):
     mfcc_max_df = pd.DataFrame(mfcc_df['mfcc_max'].tolist(), columns=[f'mfcc_max_{i}' for i in range(CFG['N_MFCC'])])
     mfcc_min_df = pd.DataFrame(mfcc_df['mfcc_min'].tolist(), columns=[f'mfcc_min_{i}' for i in range(CFG['N_MFCC'])])
 
-    mfcc_mean_normalized = pd.DataFrame(scaler.fit_transform(mfcc_mean_df), columns=[f'mfcc_mean_norm_{i}' for i in range(CFG['N_MFCC'])])  # 정규화 추가
-    mfcc_max_normalized = pd.DataFrame(scaler.fit_transform(mfcc_max_df), columns=[f'mfcc_max_norm_{i}' for i in range(CFG['N_MFCC'])])  # 정규화 추가
-    mfcc_min_normalized = pd.DataFrame(scaler.fit_transform(mfcc_min_df), columns=[f'mfcc_min_norm_{i}' for i in range(CFG['N_MFCC'])])  # 정규화 추가
-
-    mfcc_df = pd.concat([mfcc_mean_normalized, mfcc_max_normalized, mfcc_min_normalized], axis=1)
-
-
-    return mfcc_df
+    return pd.concat([mfcc_mean_df, mfcc_max_df, mfcc_min_df], axis=1)
 
 
 def get_feature_mel(df):
@@ -71,7 +67,7 @@ def get_feature_mel(df):
         hop_length = 1024
         n_mels = 128
 
-        D = np.abs(librosa.stft(data, n_fft=n_fft, win_length=win_length, hop_length=hop_length))
+        D = np.abs(librosa.stft(data, n_fft=n_fft, win_length = win_length, hop_length=hop_length))
         mel = librosa.feature.melspectrogram(S=D, sr=sr, n_mels=n_mels, hop_length=hop_length, win_length=win_length)
 
         features.append({
@@ -79,7 +75,6 @@ def get_feature_mel(df):
             'mel_max': mel.min(axis=1),
             'mel_min': mel.max(axis=1),
         })
-
     mel_df = pd.DataFrame(features)
     mel_mean_df = pd.DataFrame(mel_df['mel_mean'].tolist(), columns=[f'mel_mean_{i}' for i in range(n_mels)])
     mel_max_df = pd.DataFrame(mel_df['mel_max'].tolist(), columns=[f'mel_max_{i}' for i in range(n_mels)])
@@ -99,34 +94,47 @@ test_x = pd.concat([test_mel, test_mf], axis=1)
 train_y = train_df['label']
 
 train_x['label'] = train_df['label']
-train_data = TabularDataset(train_x)
-test_data = TabularDataset(test_x)
+train_x = TabularDataset(train_x)
+test_x = TabularDataset(test_x)
+train_x = train_x.drop('label', axis=1)
 
-label = 'label'
-eval_metric = 'accuracy'
-time_limit = 3600 * 1
+# Split data into training and validation sets
+train_x, val_x, train_y, val_y = train_test_split(train_x, train_y, test_size=0.2, random_state=CFG['SEED'])
 
-predictor = TabularPredictor(
-    label=label, eval_metric=eval_metric
-).fit(train_data, presets='best_quality', time_limit=time_limit, ag_args_fit={'num_gpus': 0, 'num_cpus': 4})
+def objective(trial):
+    # Hyperparameter search space and XGBoost parameters
+    params = {
+        'n_estimators': trial.suggest_int('n_estimators', 800, 900, step=10),
+        'learning_rate': trial.suggest_loguniform('learning_rate', 0.1, 0.9),
+        'max_depth': trial.suggest_int('max_depth', 1, 10),
+        'subsample': trial.suggest_float('subsample', 0.7, 1.0),
+        'colsample_bytree': trial.suggest_float('colsample_bytree', 0.1, 1.0),
+        'gamma': trial.suggest_float('gamma', 0.0, 1.0),
+        'min_child_weight': trial.suggest_int('min_child_weight', 1, 10),
+        'reg_alpha': trial.suggest_float('reg_alpha', 0.0, 1.0),
+        'reg_lambda': trial.suggest_float('reg_lambda', 0.0, 1.0),
+        'scale_pos_weight': trial.suggest_float('scale_pos_weight', 1.0, 10.0),
+        'random_state': CFG['SEED']
+    }
 
-model_to_use = predictor.get_model_best()
-model_pred = predictor.predict(test_data, model=model_to_use)
+    model = XGBClassifier(**params)
+    model.fit(train_x, train_y)
 
+    preds = model.predict(val_x)
+    accuracy = accuracy_score(val_y, preds)
+    return accuracy
+study = optuna.create_study(direction='maximize')
+study.optimize(objective, n_trials=1)
+best_params = study.best_params
+best_params['random_state'] = CFG['SEED']
+model = XGBClassifier(**best_params)
+model.fit(train_x, train_y)
+preds = model.predict(test_x)
+preds_acc = model.predict(train_x)
 submission = pd.read_csv('./_data/dacon_voice/sample_submission.csv')
-submission['label'] = model_pred
-submission.to_csv('./autogluon_음성감정.csv', index=False)
-
-# Fitting model: WeightedEnsemble_L3 ... Training model for up to 360.0s of the -35.08s of remaining time.
-        # 0.5733   = Validation score   (accuracy)
-        # 0.56s    = Training   runtime
-        # 0.0s     = Validation runtime
-# AutoGluon training complete, total runtime = 3635.69s ... Best model: "WeightedEnsemble_L3"
-# TabularPredictor saved. To load, use: predictor = TabularPredictor.load("AutogluonModels\ag-20230526_062002\")
-
-# Fitting model: WeightedEnsemble_L3 ... Training model for up to 360.0s of the -26.29s of remaining time.
-        # 0.5789   = Validation score   (accuracy)
-        # 0.55s    = Training   runtime
-        # 0.0s     = Validation runtime
-# AutoGluon training complete, total runtime = 3626.87s ... Best model: "WeightedEnsemble_L3"
-# TabularPredictor saved. To load, use: predictor = TabularPredictor.load("AutogluonModels\ag-20230526_091414\")
+submission['label'] = preds
+# DATE
+import datetime
+date = datetime.datetime.now()
+date = date.strftime("%m%d_%H%M")
+submission.to_csv(date + 'TTS_XGB_Three_submission.csv', index=False)
