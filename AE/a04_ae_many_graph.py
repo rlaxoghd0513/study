@@ -100,39 +100,18 @@ decoded_images_713 =model_713.predict(x_test_noised)
 
 from matplotlib import pyplot as plt
 import random
-fig, ((ax1, ax2, ax3, ax4, ax5), (ax6,ax7,ax8, ax9, ax10),
-      (ax11, ax12, ax13, ax14, ax15)) = \
-      plt.subplots(3,5,figsize = (20,7))
+
+fig, axes = plt.subplots(7,5, figsize = (15,15))
 
 # 이미지 다섯개를 무작위로 고른다
-random_images = random.sample(range(decoded_images.shape[0]),5)
+random_images = random.sample(range(decoded_images_01.shape[0]),5)
 
-#원본 이미지를 맨위에 그린다
-for i,ax in enumerate([ax1,ax2,ax3,ax4,ax5]):
-    ax.imshow(x_test[random_images[i]].reshape(28,28), cmap = 'gray')
-    if i ==0:
-        ax.set_ylabel('INPUT', size = 20)
-    ax.grid(False)
-    ax.set_xticks([])
-    ax.set_yticks([])
+outputs = [x_test, decoded_images_01, decoded_images_08, decoded_images_32, decoded_images_64, decoded_images_154, decoded_images_331 , decoded_images_486 , decoded_images_713]
 
-#노이즈를 넣은 이미지
-for i,ax in enumerate([ax6,ax7,ax8,ax9,ax10]):
-    ax.imshow(x_test_noised[random_images[i]].reshape(28,28), cmap='gray')
-    if i ==0:
-        ax.set_ylabel('NOISE', size = 20)
-    ax.grid(False)
-    ax.set_xticks([])
-    ax.set_yticks([])
-
-#오토인코더가 출력한 이미지를 아래에 그린다
-for i,ax in enumerate([ax11,ax12,ax13,ax14,ax15]):
-    ax.imshow(decoded_images[random_images[i]].reshape(28,28), cmap='gray')
-    if i ==0:
-        ax.set_ylabel('OUTPUT', size = 20)
-    ax.grid(False)
-    ax.set_xticks([])
-    ax.set_yticks([])
-
-plt.tight_layout()
+for row_num, row in enumerate(axes):
+    for col_num, ax in enumerate(row):
+        ax.imshow(outputs[row_num][random_images[col_num]].reshape(28,28), cmap='gray')
+        ax.grid(False)
+        ax.set_xticks([])
+        ax.set_yticks([])
 plt.show()
