@@ -29,7 +29,7 @@ from tensorflow.keras.layers import Dense, Input
 
 def autoencoder(hidden_layer_size):
     model = Sequential()
-    model.add(Dense(units = hidden_layer_size), input_shape = (784,))
+    model.add(Dense(units = hidden_layer_size, input_shape = (784,)))
     model.add(Dense(784, activation = 'sigmoid'))
     return model
 
@@ -70,5 +70,3 @@ for i in range(n):
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
 plt.show()
-
-
