@@ -1,4 +1,14 @@
-#오토인코더 통상 마지막 액티베이션 sigmoid 컴파일에서 loss=mse가 성능좋다
+#a3_ae2를 카피해서 모델을 직접 cae로 구성
+#인코더
+# Conv2D
+# MaxPooling2D
+# Conv2D
+# MaxPooling2D
+#디코더
+# Conv2D
+# UpSampling2D
+# Conv2D
+# UpSampling2D
 
 import numpy as np
 from tensorflow.keras.datasets import mnist
@@ -6,11 +16,13 @@ from tensorflow.keras.datasets import mnist
 #1 데이터
 (x_train, _), (x_test, _) = mnist.load_data() #x로 훈련, 결과를 내기 위해
 
-x_train = x_train.reshape(60000, 784).astype('float32')/255.
-x_test = x_test.reshape(10000, 784).astype('float32')/255.
+# x_train = x_train.reshape(60000, 784).astype('float32')/255.
+# x_test = x_test.reshape(10000, 784).astype('float32')/255.
+x_train = x_train.astype('float32')/255.
+x_test = x_test.astype('float32')/255.
 
-x_train_noised = x_train + np.random.normal(0, 0.3, size = x_train.shape) # 0에서 0.1사이의 값을 랜덤하게 넣어준다
-x_test_noised = x_test + np.random.normal(0, 0.3, size = x_test.shape) 
+x_train_noised = x_train + np.random.normal(0, 0.1, size = x_train.shape) # 0에서 0.1사이의 값을 랜덤하게 넣어준다
+x_test_noised = x_test + np.random.normal(0, 0.1, size = x_test.shape) 
 
 print(x_train_noised.shape, x_test_noised.shape) #(60000, 784) (10000, 784)
 
@@ -27,31 +39,28 @@ print(np.max(x_test_noised), np.min(x_test_noised)) #1.0 0.0
 #####아까 만든거 가지고 확인####
 #2 모델
 from tensorflow.keras.models import Sequential, Model
-from tensorflow.keras.layers import Dense, Input
+from tensorflow.keras.layers import Dense, Input, Conv2D, MaxPooling2D, UpSampling2D#맥스풀링반대
 
-def autoencoder(hidden_layer_size):
+def autoencoder():
     model = Sequential()
-    model.add(Dense(units = hidden_layer_size, input_shape = (784,)))
-    model.add(Dense(784, activation = 'sigmoid'))
+    #인코더
+    model.add(Conv2D(16,(3,3), activation='relu', padding='same', input_shape=(28,28,1)))
+    model.add(MaxPooling2D(2,2)) #디폴트가 (2,2)
+    model.add(Conv2D(16,(3,3), activation='relu', padding='same'))
+    model.add(MaxPooling2D()) #(n,7,7,8) 
+    #디코더
+    model.add(Conv2D(8,(3,3), activation='relu', padding='same'))
+    model.add(UpSampling2D()) #(n,14,14,8)
+    model.add(Conv2D(16,(3,3), activation='relu', padding='same'))
+    model.add(UpSampling2D()) #(n,28,28,16)
+    model.add(Conv2D(1, (3,3), activation='sigmoid', padding='same'))
     return model
 
-# model = autoencoder(hidden_layer_size=1)
-# model = autoencoder(hidden_layer_size=154) #PCA 95퍼 성능
-# model = autoencoder(hidden_layer_size=331) #pca 99퍼 성능
-# model = autoencoder(hidden_layer_size=486) #pca 99.9퍼 성능
-model = autoencoder(hidden_layer_size=713) #pca 100퍼 성능
-
-##################################### m33_pca_mnist1.py 참고하기#########################################
-# print(np.argmax(pca_cumsum >= 0.95)+1) #154
-# print(np.argmax(pca_cumsum >= 0.99)+1) #331
-# print(np.argmax(pca_cumsum >= 0.999)+1) #486
-# print(np.argmax(pca_cumsum >= 1.0)+1) #713
-# 히든 레이어를 154로 하면 0.95
-# 331로 하면 0.99
+model = autoencoder()
 
 #3 컴파일 훈련
 model.compile(optimizer = 'adam', loss='mse')
-model.fit(x_train_noised, x_train, epochs=30, batch_size=128)
+model.fit(x_train_noised, x_train, epochs=30, batch_size=8)
 
 #4 평가 예측
 decoded_images =model.predict(x_test_noised)
@@ -96,4 +105,3 @@ for i,ax in enumerate([ax11,ax12,ax13,ax14,ax15]):
 
 plt.tight_layout()
 plt.show()
-

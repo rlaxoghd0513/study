@@ -1,4 +1,5 @@
-#오토인코더 통상 마지막 액티베이션 sigmoid 컴파일에서 loss=mse가 성능좋다
+#[실습] a03_ae2 카피해서 모델 딥하게 구성
+
 
 import numpy as np
 from tensorflow.keras.datasets import mnist
@@ -29,25 +30,20 @@ print(np.max(x_test_noised), np.min(x_test_noised)) #1.0 0.0
 from tensorflow.keras.models import Sequential, Model
 from tensorflow.keras.layers import Dense, Input
 
+# hidden_layer_size = [512,256,128,256,512]
+hidden_layer_size = [128,256,512,256,128]
+
 def autoencoder(hidden_layer_size):
     model = Sequential()
-    model.add(Dense(units = hidden_layer_size, input_shape = (784,)))
+    model.add(Dense(units = hidden_layer_size[0], input_shape = (784,)))
+    model.add(Dense(units = hidden_layer_size[1]))
+    model.add(Dense(units = hidden_layer_size[2]))
+    model.add(Dense(units = hidden_layer_size[3]))
+    model.add(Dense(units = hidden_layer_size[4]))
     model.add(Dense(784, activation = 'sigmoid'))
     return model
 
-# model = autoencoder(hidden_layer_size=1)
-# model = autoencoder(hidden_layer_size=154) #PCA 95퍼 성능
-# model = autoencoder(hidden_layer_size=331) #pca 99퍼 성능
-# model = autoencoder(hidden_layer_size=486) #pca 99.9퍼 성능
-model = autoencoder(hidden_layer_size=713) #pca 100퍼 성능
-
-##################################### m33_pca_mnist1.py 참고하기#########################################
-# print(np.argmax(pca_cumsum >= 0.95)+1) #154
-# print(np.argmax(pca_cumsum >= 0.99)+1) #331
-# print(np.argmax(pca_cumsum >= 0.999)+1) #486
-# print(np.argmax(pca_cumsum >= 1.0)+1) #713
-# 히든 레이어를 154로 하면 0.95
-# 331로 하면 0.99
+model = autoencoder(hidden_layer_size=hidden_layer_size)
 
 #3 컴파일 훈련
 model.compile(optimizer = 'adam', loss='mse')
@@ -96,4 +92,3 @@ for i,ax in enumerate([ax11,ax12,ax13,ax14,ax15]):
 
 plt.tight_layout()
 plt.show()
-
