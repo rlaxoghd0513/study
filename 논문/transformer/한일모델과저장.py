@@ -1,3 +1,4 @@
+#transformer 한일변환
 import torch.nn as nn
 import torch
 

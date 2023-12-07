@@ -1,3 +1,4 @@
+#한-일 변환
 from torchtext.legacy import data
 from nltk.tokenize import WhitespaceTokenizer
 import torch

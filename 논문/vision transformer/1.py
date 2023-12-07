@@ -21,8 +21,8 @@ class EmbeddingLayer(nn.Module):
         self.num_tokens += 1
         self.pos_embed = nn.Parameter(torch.zeros(1, self.num_tokens, self.embed_dim))
 
-        # init cls token and pos_embed -> refer timm vision transformer
-        # https://github.com/rwightman/pytorch-image-models/blob/master/timm/models/vision_transformer.py#L391
+        # init cls token and pos_embed -> refer timm vision transformer.
+        
         nn.init.normal_(self.cls_token, std=1e-6)
         trunc_normal_(self.pos_embed, std=.02)
 

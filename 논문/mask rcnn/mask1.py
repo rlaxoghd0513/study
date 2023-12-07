@@ -24,7 +24,7 @@ from torchvision.models.detection.mask_rcnn import MaskRCNNPredictor
 #     'top', 'blouse', 't-shirt', 'Knitted fabri', 'shirt', 'bra top', 
 #     'hood', 'blue jeans', 'pants', 'skirt', 'leggings', 'jogger pants', 
 #     'coat', 'jacket', 'jumper', 'padding jacket', 'best', 'kadigan', 
-#     'zip up', 'dress', 'jumpsuit')
+#     'zip up', 'dress', 'jumpsuit'.)
 classes = ('레트로','로맨틱','리조트')
 # num_classes = 21
 num_classes = len(classes)
