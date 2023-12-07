@@ -4,7 +4,7 @@ import numpy as np
 def detect_face(image):
     '''
     Input: imagen numpy.ndarray, shape=(W,H,3)
-    Output: [(y0,x1,y1,x0),(y0,x1,y1,x0),...,(y0,x1,y1,x0)] ,cada tupla representa un rostro detectado
+    Output: [(y0,x1,y1,x0),(y0,x1,y1,x0),...,(y0,x1,y1,x0)] ,cada tupla representa un rostro detectado.
     si no se detecta nada  --> Output: []
     '''
     Output = face_recognition.face_locations(image)

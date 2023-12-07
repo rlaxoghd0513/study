@@ -2,7 +2,7 @@
 como usar
 1. instanciar el modelo
 	emo = f_my_race.Race_Model()
-2. ingresar una imagen donde solo se vea un rostro (usar modelo deteccion de rostros para extraer una imagen con solo el rostro)
+2. ingresar una imagen donde solo se vea u.n rostro (usar modelo deteccion de rostros para extraer una imagen con solo el rostro)
 	emo.predict_race(face_image)
 """
 

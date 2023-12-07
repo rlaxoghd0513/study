@@ -1,5 +1,5 @@
 """
-como usar
+como usar.
 1.instalar la libreria deepface
     pip install deepface
 2. instanciar el modelo

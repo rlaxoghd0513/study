@@ -4,7 +4,7 @@ import traceback
 import numpy as np
 import cv2
 
-#------------------------ Inicia el flujo principal ----------------------------
+#------------------------ Inicia el flujo principal ----------------------------.
 class rec():
     def __init__(self):
         '''

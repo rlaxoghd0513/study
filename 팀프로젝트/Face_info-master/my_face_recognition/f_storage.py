@@ -1,5 +1,5 @@
 '''
-cargo las imagenes que estan en el folder database_images
+cargo las imagenes que estan en el folder database_images.
 '''
 import config as cfg
 import os

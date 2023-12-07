@@ -24,7 +24,7 @@ class Generator(nn.Module):
     def __init__(self, ngf, n_residual_blocks=9):
         super(Generator, self).__init__()
 
-        # Initial convolution block
+        # Initial convolution block.
         model = [nn.ReflectionPad2d(3),
                  nn.Conv2d(3, ngf, 7),
                  nn.BatchNorm2d(ngf),

@@ -1,4 +1,4 @@
-# 이 코드는 모델의 연산 속도를 측정하기 위한 것
+# 이 코드는 모델의 연산 속도를 측정하기 위한거
 
 from timeit import default_timer as timer
 

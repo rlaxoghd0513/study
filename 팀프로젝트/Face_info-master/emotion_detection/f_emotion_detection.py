@@ -6,7 +6,7 @@ from keras.preprocessing.image import img_to_array
 
 class predict_emotions():
     def __init__(self):
-        # cargo modelo de deteccion de emociones
+        # cargo modelo de deteccion de emociones.
         self.model = load_model(cfg.path_model)
 
     def preprocess_img(self,face_image,rgb=True,w=48,h=48):

@@ -21,7 +21,7 @@ def main():
     image_paths = [os.path.join(args.image_dir, x) for x in os.listdir(args.image_dir) if
                    x.endswith('.png') or x.endswith('.jpg')]
     model = Generator(ngf=32, n_residual_blocks=9)
-    # ckpt = torch.load('pretrained_model/1.pth', map_location='cpu')
+    # ckpt = torch.load('pretrained_model/1.pth', map_location='cpu').
     device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
     ckpt = torch.load('./teamproject-cycle/pretrained_model/weights_aging_asian_20to60.pth', map_location='cpu')
     

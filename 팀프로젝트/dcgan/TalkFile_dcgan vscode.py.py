@@ -1,4 +1,4 @@
-#%matplotlib inline
+
 import argparse
 import os
 import random

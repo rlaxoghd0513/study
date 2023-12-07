@@ -28,7 +28,7 @@ class AgingGAN(pl.LightningModule):
         self.real_B = None
 
     def forward(self, x):
-        return self.genA2B(x) #에이징
+        return self.genA2B(x) #에이징.
         # return self.genB2A(x) #디에이징
 
     def training_step(self, batch, batch_idx, optimizer_idx):

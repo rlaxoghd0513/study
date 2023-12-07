@@ -8,7 +8,7 @@ from torchvision.utils import save_image
 latent_dim = 100
 
 
-# 생성자(Generator) 클래스 정의
+# 생성자(Generator) 클래스 정의.
 class Generator(nn.Module):
     def __init__(self):
         super(Generator, self).__init__()

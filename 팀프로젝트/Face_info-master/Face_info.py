@@ -13,7 +13,7 @@ args = vars(parser.parse_args())
 
 type_input = args['input']
 if type_input == 'image':
-    # ----------------------------- image -----------------------------
+    # ----------------------------- image ------------------------------
     #ingestar data
     frame = cv2.imread(args['path_im'])
     # obtenego info del frame
