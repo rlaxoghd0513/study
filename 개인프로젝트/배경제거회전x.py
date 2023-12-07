@@ -1,3 +1,4 @@
+#배경제거회전
 import os
 import numpy as np
 from PIL import Image, ExifTags

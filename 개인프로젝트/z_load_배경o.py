@@ -1,3 +1,4 @@
+#배경있는거 불러오기
 import numpy as np
 
 path_save_train = 'd:/study_data/_save/project/배경o/'

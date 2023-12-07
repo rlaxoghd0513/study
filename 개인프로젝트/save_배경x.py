@@ -1,3 +1,4 @@
+#배경없는거 저장
 Train_path = 'd:/study_data/_data/project/project/Training_x/'
 save_path_train = 'd:/study_data/_save/project/배경x/'
 

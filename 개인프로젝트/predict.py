@@ -1,3 +1,4 @@
+#예측
 Predict_path = 'd:/study_data/_data/project/project/Predict/'
 save_path_predict = 'd:/study_data/_save/project/predict/'
 

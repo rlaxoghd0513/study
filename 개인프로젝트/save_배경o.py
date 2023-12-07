@@ -1,3 +1,4 @@
+#저장
 Train_path = 'd:/study_data/_data/project/project/Training/'
 Test_path = 'd:/study_data/_data/project/project/Validation/'
 save_path_train = 'd:/study_data/_save/project/배경o/'
