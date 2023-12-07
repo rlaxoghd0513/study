@@ -11,7 +11,7 @@ train_data = pd.read_csv(path+'train_data.csv')
 test_data = pd.read_csv(path+'test_data.csv')
 submission = pd.read_csv(path+'answer_sample.csv')
 
-# Preprocess data
+# Preprocess data.
 def type_to_HP(type):
     HP=[30,20,10,50,30,30,30,30]
     gen=(HP[i] for i in type)
@@ -19,7 +19,7 @@ def type_to_HP(type):
 train_data['type'] = type_to_HP(train_data['type'])
 test_data['type'] = type_to_HP(test_data['type'])
 
-# Select subset of features for One-Class SVM model
+# Select subset of features for One-Class SVM model.
 features = ['air_inflow', 'air_end_temp', 'out_pressure', 'motor_current', 'motor_rpm', 'motor_temp', 'motor_vibe']
 
 # Prepare training data

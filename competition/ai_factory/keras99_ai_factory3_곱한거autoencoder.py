@@ -7,7 +7,7 @@ from keras.layers import Input, Dense
 from keras.models import Model
 from sklearn.metrics import mean_squared_error
 
-# Load train and test data
+# Load train and test data.
 path='./_data/ai_factory/'
 save_path= './_save/ai_factory/'
 train_data = pd.read_csv(path+'train_data.csv')

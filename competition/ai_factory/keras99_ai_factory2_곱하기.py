@@ -4,7 +4,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.neighbors import LocalOutlierFactor
 
-# 훈련 데이터 및 테스트 데이터 로드
+# 훈련 데이터 및 테스트 데이터 로드.
 path='./_data/ai_factory/'
 save_path= './_save/ai_factory/'
 train_data = pd.read_csv(path+'train_data.csv')

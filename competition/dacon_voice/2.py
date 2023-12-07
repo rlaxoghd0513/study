@@ -30,7 +30,7 @@ def seed_everything(seed):
     os.environ['PYTHONHASHSEED'] = str(seed)
     np.random.seed(seed)
 
-seed_everything(CFG['SEED']) # Seed 고정
+seed_everything(CFG['SEED']) # Seed 고정.
 
 
 train_df = pd.read_csv('./_data/dacon_voice/train.csv')

@@ -5,7 +5,7 @@ from sklearn.preprocessing import MinMaxScaler
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Input, Dense
 
-# 데이터 로드 및 전처리
+# 데이터 로드 및 전처리.
 path='./_data/ai_factory/'
 save_path= './_save/ai_factory/'
 train_data = pd.read_csv(path+'train_data.csv')

@@ -20,7 +20,7 @@ sample_submission_df = pd.read_csv(path + 'sample_submission.csv')
 train_df = train_df.drop('ID', axis=1)
 test_df = test_df.drop('ID', axis=1)
 
-# Weight_Status, Gender 열을 숫자 데이터로 변환
+# Weight_Status, Gender 열을 숫자 데이터로 변환.
 train_df['Weight_Status'] = train_df['Weight_Status'].map({'Normal Weight': 0, 'Overweight': 1, 'Obese': 2})
 train_df['Gender'] = train_df['Gender'].map({'M': 0, 'F': 1})
 test_df['Weight_Status'] = test_df['Weight_Status'].map({'Normal Weight': 0, 'Overweight': 1, 'Obese': 2})

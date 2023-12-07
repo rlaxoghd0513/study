@@ -32,7 +32,7 @@ model.fit(scaled_data)
 # 클러스터 레이블 가져오기
 labels = model.labels_
 
-# 클러스터 레이블과 이상치 여부를 확인하기 위해 데이터 프레임에 추가
+# 클러스터 레이블과 이상치 여부를 확인하기 위해 데이터 프레임에 추가.
 data['cluster_label'] = labels
 data['is_outlier'] = labels == -1
 

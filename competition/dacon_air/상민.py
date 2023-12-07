@@ -6,7 +6,7 @@ from sklearn.model_selection import train_test_split, GridSearchCV, StratifiedKF
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, make_scorer, log_loss
 from xgboost import XGBClassifier
 import time
-# Load data
+# Load data.
 train = pd.read_csv('./_data/dacon_air/train.csv')
 test = pd.read_csv('./_data/dacon_air/test.csv')
 sample_submission = pd.read_csv('./_data/dacon_air/sample_submission.csv', index_col=0)

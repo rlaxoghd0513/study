@@ -15,7 +15,7 @@ def seed_everything(seed):
     os.environ['PYTHONHASHSEED'] = str(seed)
     np.random.seed(seed)
 
-seed_everything(777)  # Seed 고정
+seed_everything(777)  # Seed 고정.
 
 path = 'c:/users/bitcamp/study/_data/dacon_범죄/'
 save_path = 'c:/users/bitcamp/study/_save/dacon_범죄/'

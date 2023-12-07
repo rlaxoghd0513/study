@@ -15,7 +15,7 @@ def seed_everything(seed):
     os.environ['PYTHONHASHSEED'] = str(seed)
     np.random.seed(seed)
 
-seed_everything(42) # Fixed Seed
+seed_everything(42) # Fixed Seed.
 
 def csv_to_parquet(csv_path, save_name):
     df = pd.read_csv(csv_path)

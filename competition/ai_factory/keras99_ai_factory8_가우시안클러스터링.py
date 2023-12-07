@@ -5,7 +5,7 @@ from sklearn.preprocessing import StandardScaler, RobustScaler
 from sklearn.mixture import GaussianMixture
 from sklearn.cluster import KMeans
 
-# 데이터 로드
+# 데이터 로드.
 path='./_data/ai_factory/'
 train_data = pd.read_csv(path+'train_data.csv')
 test_data = pd.read_csv(path+'test_data.csv')

@@ -25,7 +25,7 @@ train_csv['beomjoebalsaengji'] = le.fit_transform(train_csv['beomjoebalsaengji']
 test_csv['beomjoebalsaengji'] = le.transform(test_csv['beomjoebalsaengji'])
 
 print(le.classes_)
-# ['공원' '백화점' '병원' '식당' '약국' '은행' '인도' '주거지' '주유소' '주차장' '차도' '편의점' '학교','호텔/모텔']
+# ['공원' '백화점' '병원' '식당' '약국' '은행' '인도' '주거지' '주유소' '주차장' '차도' '편의점' '학교','호텔/모텔'.]
 # 공원         736      0
 # 학교         728      12
 # 약국         653       4

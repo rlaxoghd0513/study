@@ -23,7 +23,7 @@ test_data['type']=type_to_HP(test_data['type'])
 # Select subset of features for GMM model
 features = ['air_inflow', 'air_end_temp', 'out_pressure', 'motor_current', 'motor_rpm', 'motor_temp', 'motor_vibe']
 
-# Prepare train and test data
+# Prepare train and test data.
 X = train_data[features]
 
 # Split data into train and validation sets

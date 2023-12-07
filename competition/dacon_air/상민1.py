@@ -11,7 +11,7 @@ train = pd.read_csv('./_data/dacon_air/train.csv')
 test = pd.read_csv('./_data/dacon_air/test.csv')
 sample_submission = pd.read_csv('./_data/dacon_air/sample_submission.csv', index_col=0)
 
-#print(train)
+#print(train).
 # Replace variables with missing values except for the label (Delay) with the most frequent values of the training data
 NaN = ['Origin_State', 'Destination_State', 'Airline', 'Estimated_Departure_Time', 'Estimated_Arrival_Time', 'Carrier_Code(IATA)', 'Carrier_ID(DOT)']
 

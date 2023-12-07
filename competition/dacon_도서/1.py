@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-#1 데이터
+#1 데이터.
 path = './_data/dacon_도서/'
 train_csv = pd.read_csv(path + 'train.csv', encoding='cp949')
 test_csv = pd.read_csv(path + 'test.csv', encoding='cp949')

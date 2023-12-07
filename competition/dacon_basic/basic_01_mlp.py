@@ -26,7 +26,7 @@ train_df['Gender'] = train_df['Gender'].map({'M': 0, 'F': 1})
 test_df['Weight_Status'] = test_df['Weight_Status'].map({'Normal Weight': 0, 'Overweight': 1, 'Obese': 2})
 test_df['Gender'] = test_df['Gender'].map({'M': 0, 'F': 1})
 
-# PolynomialFeatures를 사용하여 데이터 전처리
+# PolynomialFeatures를 사용하여 데이터 전처리.
 poly = PolynomialFeatures(degree=2, include_bias=False)
 X = poly.fit_transform(train_df.drop('Calories_Burned', axis=1))
 y = train_df['Calories_Burned']

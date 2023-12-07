@@ -25,7 +25,7 @@ print(f"최빈값: {mode2_delay[0][0]}, 개수: {mode2_delay[1][0]}")
 print(f"최빈값: {mode2_not_delay[0][0]}, 개수: {mode2_not_delay[1][0]}")
 
 # 최빈값: 0.316, 개수: 147575
-# 최빈값: 0.684, 개수: 147575
+# 최빈값: 0.684, 개수: 147575.
 
 data3 = pd.read_csv('./_save/dacon_air/0506_0426.csv')
 data3_delay = data3['Not_Delayed']

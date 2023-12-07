@@ -23,7 +23,7 @@ for col in NaN:
         test[col] = test[col].fillna(mode)
 print('Done.')
 
-# Quantify qualitative variables
+# Quantify qualitative variables.
 qual_col = ['Origin_Airport', 'Origin_State', 'Destination_Airport', 'Destination_State', 'Airline', 'Carrier_Code(IATA)', 'Tail_Number']
 
 for i in qual_col:

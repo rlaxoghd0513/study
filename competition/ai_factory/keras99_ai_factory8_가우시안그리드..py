@@ -26,7 +26,7 @@ features = ['air_inflow', 'air_end_temp', 'out_pressure', 'motor_current', 'moto
 # Prepare train and test data
 X = train_data[features]
 
-# Split data into train and validation sets
+# Split data into train and validation sets.
 X_train, X_val = train_test_split(X, train_size= 0.9, random_state= 1234)
 
 n_splits = 5
