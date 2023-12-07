@@ -1,4 +1,4 @@
-#깨진 이미지 찾기
+#깨진 이미지 찾기.
 
 
 from PIL import Image
