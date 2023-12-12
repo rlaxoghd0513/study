@@ -9,7 +9,7 @@ from my_face_recognition import f_main
 
 
 
-# instanciar detectores
+# instanciar detectores.
 age_detector = f_my_age.Age_Model()
 gender_detector =  f_my_gender.Gender_Model()
 race_detector = f_my_race.Race_Model()

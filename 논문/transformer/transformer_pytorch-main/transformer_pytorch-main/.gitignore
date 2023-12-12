@@ -1,0 +1,6 @@
+__pycache__
+.data
+*.pt
+*.out
+checkpoint
+.DS_Store
