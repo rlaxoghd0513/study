@@ -27,7 +27,7 @@ for filename in os.listdir(input_dir):
 
         arr[(arr[:,:,0] < 1) & (arr[:,:,1] < 1) & (arr[:,:,2] < 1)] = [0, 0, 0, 0]
 
-        # 투명한 부분을 아예 없애기
+        # 투명한 부분을 아예 없애기.
         # arr = arr[(arr[:,:,3] > 0)]
 
         out = Image.fromarray(arr)
